@@ -133,7 +133,7 @@ public class TagWindow {
 	 */
 	protected void createContents() {
 		shell = new Shell();
-		shell.setImage(SWTResourceManager.getImage("/home/michele/workspace/Wrappers/img/floppy13.png"));
+		shell.setImage(SWTResourceManager.getImage("../../JTagger/img/floppy13.png"));
 		shell.setSize(1098, 647);
 		shell.setText("SWT Application");
 		FormLayout fl_shell = new FormLayout();
@@ -371,12 +371,12 @@ public class TagWindow {
 		
 		ToolItem toolItem_open = new ToolItem(toolBar, SWT.NONE);
 		toolItem_open.setToolTipText("Open file");
-		toolItem_open.setImage(SWTResourceManager.getImage("/home/michele/workspace/Wrappers/img/open.png"));
+		toolItem_open.setImage(SWTResourceManager.getImage("JTagger/img/open.png"));
 		toolItem_open.addListener(SWT.Selection, new OpenListener());
 		
 		ToolItem toolItem_openfolder = new ToolItem(toolBar, SWT.NONE);
 		toolItem_openfolder.setToolTipText("Open directory");
-		toolItem_openfolder.setImage(SWTResourceManager.getImage("/home/michele/workspace/Wrappers/img/openf.png"));
+		toolItem_openfolder.setImage(SWTResourceManager.getImage("JTagger/img/openf.png"));
 		toolItem_openfolder.addListener(SWT.Selection, new OpenFolderListener());
 		
 		new ToolItem(toolBar, SWT.SEPARATOR);
@@ -398,13 +398,13 @@ public class TagWindow {
 				}
 			}
 		});
-		toolItem_search.setImage(SWTResourceManager.getImage("/home/michele/workspace/Wrappers/img/search.png"));
+		toolItem_search.setImage(SWTResourceManager.getImage("JTagger/img/search.png"));
 		toolItem_search.setWidth(2);
 		
 		ToolItem toolItem_save = new ToolItem(toolBar, SWT.NONE);
 		toolItem_save.setToolTipText("Save");
 		toolItem_save.setWidth(2);
-		toolItem_save.setImage(SWTResourceManager.getImage("/home/michele/workspace/Wrappers/img/save.png"));
+		toolItem_save.setImage(SWTResourceManager.getImage("JTagger/img/save.png"));
 		
 		Group grpInfo = new Group(shell, SWT.NONE);
 		fd_grpCoverArt.bottom = new FormAttachment(grpInfo, -6);
