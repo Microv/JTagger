@@ -1,5 +1,7 @@
 package gui;
 
+import java.awt.Color;
+
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -43,7 +45,7 @@ public class prova extends Dialog {
 		shell = new Shell(getParent(), getStyle());
 		shell.setSize(450, 300);
 		shell.setText(getText());
-
+		System.out.println(shell.getText());
 	}
 
 }
