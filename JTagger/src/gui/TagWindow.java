@@ -544,7 +544,7 @@ public class TagWindow {
 			bi = ImageIO.read(iis);
 			lblCoverProp.setText("Dimensions\t"+bi.getWidth()+"x"+bi.getHeight());
 		} catch(IllegalArgumentException e) {
-			File noCover = new File("img/nocover.png");
+			File noCover = new File("JTagger/img/nocover.png");
 			bi = ImageIO.read(noCover);
 			lblCoverProp.setText("Dimensions");
 		}
