@@ -139,7 +139,7 @@ public class QueryDialog extends Dialog {
 		releaseSearch.setText(tag.getFirst(FieldKey.ALBUM));
 		
 		Button button = new Button(shell, SWT.NONE);
-		button.setImage(SWTResourceManager.getImage("/home/michele/workspace/Wrappers/img/search.png"));
+		button.setImage(SWTResourceManager.getImage("JTagger/img/search.png"));
 		FormData fd_button = new FormData();
 		fd_button.bottom = new FormAttachment(grpResults, -6);
 		button.addListener(SWT.Selection, new QueryListener());

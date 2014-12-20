@@ -10,6 +10,7 @@ import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageInputStream;
+import javax.xml.parsers.ParserConfigurationException;
 
 import metadata.Track;
 
@@ -97,7 +98,7 @@ public class TagWindow {
 	private Text textAlbumArtist;
 	
 	private Tag tag;
-	private Track toSaveTag;
+	private Track toSaveTrack;
 	
 	/**
 	 * Launch the application.
@@ -401,6 +402,27 @@ public class TagWindow {
 		toolItem_search.setImage(SWTResourceManager.getImage("JTagger/img/search.png"));
 		toolItem_search.setWidth(2);
 		
+		ToolItem toolItem_fp = new ToolItem(toolBar, SWT.NONE);
+		toolItem_fp.setToolTipText("Search by fingerprint");
+		toolItem_fp.setWidth(2);
+		toolItem_fp.setImage(SWTResourceManager.getImage("JTagger/img/audio-headset.png"));
+		toolItem_fp.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				if(tag == null) {
+					MessageBox msgBox = new MessageBox(shell);
+					msgBox.setMessage("Please select an Mp3 file");
+					msgBox.open();
+				}
+				else {
+					FPDialog dialog = null;
+					dialog = new FPDialog(new Shell(shell), SWT.TITLE);
+					dialog.setPath(toSaveTrack.getPath());
+					dialog.open();
+				}
+			}
+		});
+		
 		ToolItem toolItem_save = new ToolItem(toolBar, SWT.NONE);
 		toolItem_save.setToolTipText("Save");
 		toolItem_save.setWidth(2);
@@ -461,16 +483,11 @@ public class TagWindow {
 				Point pt = new Point(arg0.x, arg0.y);
 				TableItem titem = table.getItem(pt);
 				if(titem != null)
-					try {
-						getInfo(fileExplorer.get(titem.getText(1)+"/"+titem.getText(0)
+					getInfo(fileExplorer.get(titem.getText(1)+"/"+titem.getText(0)
 								).getPath());
-					} catch (CannotReadException | IOException | TagException
-							| ReadOnlyFileException
-							| InvalidAudioFrameException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				
+					
+				toSaveTrack = new Track();
+				toSaveTrack.setPath(titem.getText(1)+"/"+titem.getText(0));
 			}
 			
 			@Override
@@ -498,9 +515,16 @@ public class TagWindow {
 	    }
 	}
 	
-	private void getInfo(String path) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException {
+	private void getInfo(String path) {
 		File file = new File(path);
-		AudioFile f = AudioFileIO.read(file);
+		AudioFile f = null;
+		try {
+			f = AudioFileIO.read(file);
+		} catch (CannotReadException | IOException | TagException
+				| ReadOnlyFileException | InvalidAudioFrameException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		tag = f.getTag();
 		
 		textTitle.setText(tag.getFirst(FieldKey.TITLE));
@@ -521,7 +545,7 @@ public class TagWindow {
 		
 		TagField coverArtField = tag.getFirstField(FieldKey.COVER_ART);
 	
-		BufferedImage bi;
+		BufferedImage bi = null;
 		try {
 			ImageInputStream iis = null;
 			if(coverArtField instanceof ID3v22Frame) {
@@ -545,8 +569,16 @@ public class TagWindow {
 			lblCoverProp.setText("Dimensions\t"+bi.getWidth()+"x"+bi.getHeight());
 		} catch(IllegalArgumentException e) {
 			File noCover = new File("JTagger/img/nocover.png");
-			bi = ImageIO.read(noCover);
+			try {
+				bi = ImageIO.read(noCover);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			lblCoverProp.setText("Dimensions");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		try {

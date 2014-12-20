@@ -134,7 +134,18 @@ public class MusicBrainzWrapper {
 		
 		return executeQuery(doc);
 	}
-
+	
+	public Track getTrackById(String id) 
+			throws SAXException, IOException, XPathExpressionException {
+		Document doc = builder.parse(recordingQuery+"rid:"+id);
+		
+		ArrayList<Track> toReturn = executeQuery(doc);
+		if(toReturn.size() > 0)
+			return toReturn.get(0);
+		else
+			return null;
+	}
+	
 	public void setAlbumInfo(Track track) {
 		
 	}
