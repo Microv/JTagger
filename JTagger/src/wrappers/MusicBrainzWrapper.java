@@ -96,7 +96,8 @@ public class MusicBrainzWrapper {
 	public ArrayList<Track> getTrackByTitle(String recording) 
 			throws SAXException, IOException, XPathExpressionException {
 		
-		Document doc = builder.parse(recordingQuery+"recording:"+recording);
+		Document doc = builder.parse(recordingQuery+"recording:\""
+				+recording.replaceAll(" ", "%20")+"\"");
 		
 		return executeQuery(doc);
 	}
@@ -105,25 +106,29 @@ public class MusicBrainzWrapper {
 			String artist, String release) 
 					throws SAXException, IOException, XPathExpressionException {
 		
-		Document doc = builder.parse(recordingQuery+"recording:"+recording
-				+"+artist:"+artist
-				+"+release:"+release);
+		Document doc = builder.parse(recordingQuery+"recording:\""
+				+recording.replaceAll(" ", "%20")+"\""
+				+"+artist:\""+artist.replaceAll(" ", "%20")+"\""
+				+"+release:\""+release.replaceAll(" ", "%20")+"\"");
 		
 		return executeQuery(doc);
 	}
 
 	public ArrayList<Track> getTrackByTitleArtist(String recording, String artist) 
 			throws SAXException, IOException, XPathExpressionException {
-		Document doc = builder.parse(recordingQuery+"recording:"+recording
-				+"+artist:"+artist);
+		
+		Document doc = builder.parse(recordingQuery+"recording:\""
+				+recording.replaceAll(" ", "%20")+"\""
+				+"+artist:\""+artist.replaceAll(" ", "%20")+"\"");
 		
 		return executeQuery(doc);
 	}
 
 	public ArrayList<Track> getTrackByArtist(String artist) 
 			throws SAXException, IOException, XPathExpressionException {
+		
 		String s = recordingQuery+"artist:\""+artist.replaceAll(" ", "%20")+"\"";
-		System.out.println(s);
+		
 		Document doc = builder.parse(s);
 		
 		return executeQuery(doc);
@@ -132,13 +137,15 @@ public class MusicBrainzWrapper {
 	public ArrayList<Track> getTrackByAlbum(String release) 
 			throws SAXException, IOException, XPathExpressionException {
 		
-		Document doc = builder.parse(recordingQuery+"release:"+release);
+		Document doc = builder.parse(recordingQuery+"release:\""
+				+release.replaceAll(" ", "%20")+"\"");
 		
 		return executeQuery(doc);
 	}
 	
 	public Track getTrackById(String id) 
 			throws SAXException, IOException, XPathExpressionException {
+		
 		Document doc = builder.parse(recordingQuery+"rid:"+id);
 		
 		ArrayList<Track> toReturn = executeQuery(doc);
@@ -155,8 +162,19 @@ public class MusicBrainzWrapper {
 	public ArrayList<Track> getTrackByTitleAlbum(String recording,
 			String release) throws SAXException, IOException, XPathExpressionException {
 		
-		Document doc = builder.parse(recordingQuery+"recording:"+recording
-				+"+release:"+release);
+		Document doc = builder.parse(recordingQuery+"recording:\""
+				+recording.replaceAll(" ", "%20")+"\""
+				+"+release:\""+release.replaceAll(" ", "%20")+"\"");
+		
+		return executeQuery(doc);
+	}
+
+	public ArrayList<Track> getTrackByArtistAlbum(String artist,
+			String release) throws SAXException, IOException, XPathExpressionException {
+		
+		Document doc = builder.parse(recordingQuery+"artist:\""
+				+artist.replaceAll(" ", "%20")+"\""
+				+"+release:\""+release.replaceAll(" ", "%20")+"\"");
 		
 		return executeQuery(doc);
 	}
