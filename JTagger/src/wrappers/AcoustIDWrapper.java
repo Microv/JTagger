@@ -50,6 +50,14 @@ public class AcoustIDWrapper {
 			shCommand[1] = "/c";
 			shCommand[2] = "JTagger\\fpcalc\\fpcalc_WIN_64.exe "+filePath;
 		}
+		else if(OS.indexOf("mac") >=0 )
+		{
+			shCommand = new String[3];
+			shCommand[0] = "/bin/sh";
+			shCommand[1] = "-c";
+			shCommand[2] = "JTagger/fpcalc/fpcalc_OSX_64 "+filePath;
+		
+		}
 
 		p = Runtime.getRuntime().exec(shCommand);
 		p.waitFor();
