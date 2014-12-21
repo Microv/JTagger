@@ -7,9 +7,12 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageInputStream;
+
 import metadata.Track;
+
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -448,7 +451,7 @@ public class TagWindow {
 		
 		lblTrLength = new Label(grpInfo, SWT.NONE);
 		lblTrLength.setBounds(10, 171, 202, 13);
-		lblTrLength.setText("Track length");
+		lblTrLength.setText("Length");
 		
 		lblFormat = new Label(grpInfo, SWT.NONE);
 		lblFormat.setBounds(10, 113, 202, 13);
@@ -585,12 +588,19 @@ public class TagWindow {
 		
 		lblBitRate.setText(   "Bit Rate     \t"+f.getAudioHeader().getBitRateAsNumber()+" bps");
 		lblSamplerate.setText("Sample Rate  \t"+f.getAudioHeader().getSampleRate()+" Hz");
-		lblFormat.setText(    "Format       \t"+f.getAudioHeader().getFormat()); 
-		lblTrLength.setText(  "Track length \t"+f.getAudioHeader().getTrackLength()+" s");
+		lblFormat.setText(    "Format       \t"+f.getAudioHeader().getFormat());
+		lblTrLength.setText(  "Length \t\t"+getLength(f));
 		lblEncoder.setText(   "Encoder      \t"+f.getAudioHeader().getEncodingType());
 		lblChannels.setText(  "Channels     \t"+f.getAudioHeader().getChannels());
 	}
 	
+	private String getLength(AudioFile f) {
+		int seconds = f.getAudioHeader().getTrackLength();
+		int min = (seconds % 3600) / 60, sec = seconds % 3600 % 60;
+		
+		return min + ":" + (sec < 10 ? "0" : "") + sec;
+	}
+
 	private Image makeSWTImage(Display display, java.awt.Image ai) throws Exception { 
 		int width = ai.getWidth(null); 
 		int height = ai.getHeight(null); 
