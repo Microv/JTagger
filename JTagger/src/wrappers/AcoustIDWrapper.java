@@ -34,12 +34,26 @@ public class AcoustIDWrapper {
 	}
 	
 	public void genAudioFingerPrintInfo(String filePath, int length) throws IOException, InterruptedException {
-		
-		String[] shCommand = { "/bin/sh", "-c", "JTagger/fpcalc/fpcalc_LINUX_64 "
-				+ filePath};
+		String OS = System.getProperty("os.name").toLowerCase();
+		String[] shCommand  = null;
+		/*String[] shCommand = { "/bin/sh", "-c", "JTagger/fpcalc/fpcalc_LINUX_64 "
+				+ filePath};*/
+		if(OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0) {
+			shCommand = new String[3];
+			shCommand[0] = "/bin/sh";
+			shCommand[1] = "-c";
+			shCommand[2] = "JTagger/fpcalc/fpcalc_LINUX_64 "+filePath;
+		}
+		else if(OS.indexOf("win") >= 0) {
+			shCommand = new String[3];
+			shCommand[0] = "cmd.exe";
+			shCommand[1] = "/c";
+			shCommand[2] = "JTagger\\fpcalc\\fpcalc_WIN_64.exe "+filePath;
+		}
+
 		p = Runtime.getRuntime().exec(shCommand);
 		p.waitFor();
-	 
+		
 	    reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
 	 
 	    String result = "";
