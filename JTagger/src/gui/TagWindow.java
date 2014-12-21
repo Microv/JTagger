@@ -283,11 +283,11 @@ public class TagWindow {
 		mntmFile.setMenu(menu_1);
 		
 		MenuItem mntmOpen = new MenuItem(menu_1, SWT.NONE);
-		mntmOpen.addListener(SWT.Selection, new OpenFolderListener());
+		mntmOpen.addListener(SWT.Selection, new OpenListener());
 		mntmOpen.setText("Open");
 		
 		MenuItem mntmOpenFolder = new MenuItem(menu_1, SWT.NONE);
-		mntmOpenFolder.addListener(SWT.Selection, new OpenListener());
+		mntmOpenFolder.addListener(SWT.Selection, new OpenFolderListener());
 		mntmOpenFolder.setText("Open Folder");
 		
 		MenuItem mntmExit = new MenuItem(menu_1, SWT.NONE);
@@ -475,14 +475,18 @@ public class TagWindow {
 			
 			@Override
 			public void mouseDown(org.eclipse.swt.events.MouseEvent arg0) {
-				Point pt = new Point(arg0.x, arg0.y);
-				TableItem titem = table.getItem(pt);
-				if(titem != null)
-					getInfo(fileExplorer.get(titem.getText(1)+"/"+titem.getText(0)
-								).getPath());
+				try {
+					Point pt = new Point(arg0.x, arg0.y);
+					TableItem titem = table.getItem(pt);
+					if(titem != null)
+						getInfo(fileExplorer.get(titem.getText(1)+"/"+titem.getText(0)
+									).getPath());
+						
+					toSaveTrack = new Track();
+					toSaveTrack.setPath(titem.getText(1)+"/"+titem.getText(0));
+				} catch (NullPointerException e) {
 					
-				toSaveTrack = new Track();
-				toSaveTrack.setPath(titem.getText(1)+"/"+titem.getText(0));
+				}
 			}
 			
 			@Override

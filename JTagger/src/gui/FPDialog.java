@@ -99,7 +99,7 @@ public class FPDialog extends Dialog {
 	 */
 	private void createContents() {
 		shell = new Shell(getParent(), getStyle());
-		shell.setSize(508, 366);
+		shell.setSize(689, 366);
 		shell.setText(getText());
 		shell.setLayout(new FormLayout());
 		
@@ -108,12 +108,11 @@ public class FPDialog extends Dialog {
 		FormData fd_grpResults = new FormData();
 		fd_grpResults.top = new FormAttachment(0, 10);
 		fd_grpResults.left = new FormAttachment(0, 10);
-		fd_grpResults.right = new FormAttachment(0, 492);
-		fd_grpResults.bottom = new FormAttachment(100, -34);
+		fd_grpResults.right = new FormAttachment(0, 673);
 		grpResults.setLayoutData(fd_grpResults);
 		
 		table = new Table(grpResults, SWT.BORDER | SWT.FULL_SELECTION);
-		table.setBounds(10, 20, 462, 266);
+		table.setBounds(10, 20, 643, 275);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		
@@ -134,10 +133,12 @@ public class FPDialog extends Dialog {
 		tblclmnYear.setText("Year");
 		
 		progressBar = new ProgressBar(shell, SWT.NONE);
+		fd_grpResults.bottom = new FormAttachment(progressBar, -6);
 		FormData fd_progressBar = new FormData();
-		fd_progressBar.top = new FormAttachment(grpResults, 6);
-		fd_progressBar.right = new FormAttachment(grpResults, -10, SWT.RIGHT);
+		fd_progressBar.top = new FormAttachment(0, 321);
+		fd_progressBar.bottom = new FormAttachment(100, -8);
 		fd_progressBar.left = new FormAttachment(0, 20);
+		fd_progressBar.right = new FormAttachment(100, -10);
 		progressBar.setLayoutData(fd_progressBar);
 		
 		table.addMouseListener(new MouseListener() {

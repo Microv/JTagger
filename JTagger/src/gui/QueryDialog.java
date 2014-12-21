@@ -78,18 +78,18 @@ public class QueryDialog extends Dialog {
 	 */
 	private void createContents() {
 		shell = new Shell(getParent(), getStyle());
-		shell.setSize(508, 370);
+		shell.setSize(690, 372);
 		shell.setText(getText());
 		shell.setLayout(new FormLayout());
 		
 		Group grpResults = new Group(shell, SWT.NONE);
 		grpResults.setText("Results");
 		FormData fd_grpResults = new FormData();
-		fd_grpResults.right = new FormAttachment(0, 492);
+		fd_grpResults.left = new FormAttachment(0, 10);
+		fd_grpResults.right = new FormAttachment(100, -10);
 		grpResults.setLayoutData(fd_grpResults);
 		
 		Label lblTitle = new Label(shell, SWT.NONE);
-		fd_grpResults.left = new FormAttachment(lblTitle, 0, SWT.LEFT);
 		FormData fd_lblTitle = new FormData();
 		fd_lblTitle.left = new FormAttachment(0, 10);
 		fd_lblTitle.top = new FormAttachment(0, 20);
@@ -115,22 +115,23 @@ public class QueryDialog extends Dialog {
 		lblArtist.setText("Artist");
 		
 		artistSearch = new Text(shell, SWT.BORDER);
-		fd_lblArtist.right = new FormAttachment(100, -186);
+		fd_lblArtist.right = new FormAttachment(100, -360);
 		FormData fd_artistSearch = new FormData();
-		fd_artistSearch.right = new FormAttachment(100, -10);
-		fd_artistSearch.left = new FormAttachment(lblArtist, 6);
-		fd_artistSearch.top = new FormAttachment(0, 10);
+		fd_artistSearch.bottom = new FormAttachment(lblTitle, 0, SWT.BOTTOM);
+		fd_artistSearch.left = new FormAttachment(lblArtist, 1);
+		fd_artistSearch.right = new FormAttachment(100, -189);
 		artistSearch.setLayoutData(fd_artistSearch);
 		artistSearch.setText(tag.getFirst(FieldKey.ARTIST));
 		
 		Label lblNewLabel = new Label(shell, SWT.NONE);
 		FormData fd_lblNewLabel = new FormData();
+		fd_lblNewLabel.bottom = new FormAttachment(grpResults, -17);
 		fd_lblNewLabel.left = new FormAttachment(0, 10);
-		fd_lblNewLabel.top = new FormAttachment(lblTitle, 23);
 		lblNewLabel.setLayoutData(fd_lblNewLabel);
 		lblNewLabel.setText("Release");
 		
 		releaseSearch = new Text(shell, SWT.BORDER);
+		fd_grpResults.top = new FormAttachment(releaseSearch, 14);
 		FormData fd_releaseSearch = new FormData();
 		fd_releaseSearch.right = new FormAttachment(recordingSearch, 0, SWT.RIGHT);
 		fd_releaseSearch.top = new FormAttachment(recordingSearch, 13);
@@ -139,15 +140,14 @@ public class QueryDialog extends Dialog {
 		releaseSearch.setText(tag.getFirst(FieldKey.ALBUM));
 		
 		Button button = new Button(shell, SWT.NONE);
-		fd_grpResults.top = new FormAttachment(button, 6);
 		button.setImage(SWTResourceManager.getImage(QueryDialog.class, "/gui/img/search.png"));
 		FormData fd_button = new FormData();
-		fd_button.bottom = new FormAttachment(100, -255);
+		fd_button.top = new FormAttachment(recordingSearch, 0, SWT.TOP);
 		fd_button.right = new FormAttachment(100, -22);
 		button.addListener(SWT.Selection, new QueryListener());
 		
 		table = new Table(grpResults, SWT.BORDER | SWT.FULL_SELECTION);
-		table.setBounds(10, 20, 462, 175);
+		table.setBounds(10, 20, 644, 205);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		
@@ -172,10 +172,10 @@ public class QueryDialog extends Dialog {
 		progressBar = new ProgressBar(shell, SWT.NONE);
 		fd_grpResults.bottom = new FormAttachment(progressBar, -6);
 		FormData fd_progressBar = new FormData();
-		fd_progressBar.top = new FormAttachment(0, 312);
-		fd_progressBar.bottom = new FormAttachment(100, -10);
-		fd_progressBar.right = new FormAttachment(100, -22);
 		fd_progressBar.left = new FormAttachment(0, 20);
+		fd_progressBar.right = new FormAttachment(100, -10);
+		fd_progressBar.top = new FormAttachment(0, 324);
+		fd_progressBar.bottom = new FormAttachment(100, -10);
 		progressBar.setLayoutData(fd_progressBar);
 		
 		table.addMouseListener(new MouseListener() {

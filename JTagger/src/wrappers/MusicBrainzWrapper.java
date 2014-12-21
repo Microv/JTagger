@@ -21,7 +21,7 @@ import metadata.Track;
 
 public class MusicBrainzWrapper {
 	
-	private final static String recordingQuery = "http://musicbrainz.org/ws/2/recording/?limit=100&query="; 
+	private final static String recordingQuery = "http://musicbrainz.org/ws/2/recording/?limit=25&query="; 
 	//private final static String releaseQuery = "http://musicbrainz.org/ws/2/release/?query="; 
 	
 	private DocumentBuilderFactory factory;
