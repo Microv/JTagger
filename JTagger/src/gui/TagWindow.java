@@ -64,7 +64,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
 public class TagWindow {
-
+	
 	protected Shell shell;
 	private Text textTitle;
 	private Text textComposer;
