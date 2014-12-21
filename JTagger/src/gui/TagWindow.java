@@ -587,7 +587,7 @@ public class TagWindow {
 		}
 		
 		lblBitRate.setText(   "Bit Rate\t\t"+f.getAudioHeader().getBitRateAsNumber()+" bps");
-		lblSamplerate.setText("Sample Rate\t\t"+f.getAudioHeader().getSampleRate()+" Hz");
+		lblSamplerate.setText("Sample Rate\t"+f.getAudioHeader().getSampleRate()+" Hz");
 		lblFormat.setText(    "Format\t\t"+f.getAudioHeader().getFormat());
 		lblTrLength.setText(  "Length\t\t"+getLength(f));
 		lblEncoder.setText(   "Encoder\t\t"+f.getAudioHeader().getEncodingType());

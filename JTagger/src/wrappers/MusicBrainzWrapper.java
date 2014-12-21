@@ -122,7 +122,9 @@ public class MusicBrainzWrapper {
 
 	public ArrayList<Track> getTrackByArtist(String artist) 
 			throws SAXException, IOException, XPathExpressionException {
-		Document doc = builder.parse(recordingQuery+"artist:"+artist);
+		String s = recordingQuery+"artist:\""+artist.replaceAll(" ", "%20")+"\"";
+		System.out.println(s);
+		Document doc = builder.parse(s);
 		
 		return executeQuery(doc);
 	}
