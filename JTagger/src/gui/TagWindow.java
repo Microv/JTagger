@@ -586,12 +586,12 @@ public class TagWindow {
 			e.printStackTrace();
 		}
 		
-		lblBitRate.setText(   "Bit Rate     \t"+f.getAudioHeader().getBitRateAsNumber()+" bps");
-		lblSamplerate.setText("Sample Rate  \t"+f.getAudioHeader().getSampleRate()+" Hz");
-		lblFormat.setText(    "Format       \t"+f.getAudioHeader().getFormat());
-		lblTrLength.setText(  "Length \t\t"+getLength(f));
-		lblEncoder.setText(   "Encoder      \t"+f.getAudioHeader().getEncodingType());
-		lblChannels.setText(  "Channels     \t"+f.getAudioHeader().getChannels());
+		lblBitRate.setText(   "Bit Rate\t\t"+f.getAudioHeader().getBitRateAsNumber()+" bps");
+		lblSamplerate.setText("Sample Rate\t\t"+f.getAudioHeader().getSampleRate()+" Hz");
+		lblFormat.setText(    "Format\t\t"+f.getAudioHeader().getFormat());
+		lblTrLength.setText(  "Length\t\t"+getLength(f));
+		lblEncoder.setText(   "Encoder\t\t"+f.getAudioHeader().getEncodingType());
+		lblChannels.setText(  "Channels\t\t"+f.getAudioHeader().getChannels());
 	}
 	
 	private String getLength(AudioFile f) {
