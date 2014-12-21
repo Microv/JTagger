@@ -130,7 +130,7 @@ public class TagWindow {
 	 */
 	protected void createContents() {
 		shell = new Shell();
-		shell.setImage(SWTResourceManager.getImage("../../JTagger/img/floppy13.png"));
+		//shell.setImage(SWTResourceManager.getImage("../../JTagger/img/floppy13.png"));
 		shell.setSize(1098, 647);
 		shell.setText("SWT Application");
 		FormLayout fl_shell = new FormLayout();
@@ -357,14 +357,8 @@ public class TagWindow {
 		tblclmnNewColumn.setWidth(502);
 		tblclmnNewColumn.setText("Path");
 		
-		ToolBar toolBar = new ToolBar(shell, SWT.WRAP);
+		ToolBar toolBar = new ToolBar(shell, SWT.FLAT);
 		toolBar.setTouchEnabled(true);
-		FormData fd_toolBar = new FormData();
-		fd_toolBar.bottom = new FormAttachment(table, -6);
-		fd_toolBar.top = new FormAttachment(0);
-		fd_toolBar.right = new FormAttachment(100, -890);
-		fd_toolBar.left = new FormAttachment(0, 10);
-		toolBar.setLayoutData(fd_toolBar);
 		
 		ToolItem toolItem_open = new ToolItem(toolBar, SWT.NONE);
 		toolItem_open.setToolTipText("Open file");
@@ -419,6 +413,7 @@ public class TagWindow {
 				}
 			}
 		});
+		new ToolItem(toolBar, SWT.SEPARATOR);
 		
 		ToolItem toolItem_save = new ToolItem(toolBar, SWT.NONE);
 		toolItem_save.setToolTipText("Save");
