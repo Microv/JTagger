@@ -23,21 +23,25 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.jaudiotagger.tag.Tag;
 import org.json.JSONException;
 import org.xml.sax.SAXException;
 
 import wrappers.AcoustIDWrapper;
 import wrappers.MusicBrainzWrapper;
 
+import org.eclipse.swt.widgets.ProgressBar;
+
 public class FPDialog extends Dialog {
 
 	protected Object result;
 	protected Shell shell;
 	private Table table;
+	private ProgressBar progressBar;
 	private String absolutePath;
 	private AcoustIDWrapper aiw;
 	private MusicBrainzWrapper mbw;
+	
+	private int pbSelection;
 
 	/**
 	 * Create the dialog.
@@ -50,6 +54,7 @@ public class FPDialog extends Dialog {
 	public FPDialog(Shell parent, int style) {
 		super(parent, style);
 		setText("SWT Dialog");
+		
 		try {
 			aiw = new AcoustIDWrapper();
 			mbw = new MusicBrainzWrapper();
@@ -70,11 +75,19 @@ public class FPDialog extends Dialog {
 	 * @return the result
 	 */
 	public Object open() {
-		
 		createContents();
 		shell.open();
 		shell.layout();
 		Display display = getParent().getDisplay();
+		
+		table.getDisplay().asyncExec(new Runnable() {
+			
+			@Override
+			public void run() {
+				fillTable();
+			}
+		});
+		
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
@@ -88,17 +101,17 @@ public class FPDialog extends Dialog {
 	 */
 	private void createContents() {
 		shell = new Shell(getParent(), getStyle());
-		shell.setSize(508, 341);
+		shell.setSize(508, 366);
 		shell.setText(getText());
 		shell.setLayout(new FormLayout());
 		
 		Group grpResults = new Group(shell, SWT.NONE);
 		grpResults.setText("Results");
 		FormData fd_grpResults = new FormData();
-		fd_grpResults.top = new FormAttachment(100, -306);
-		fd_grpResults.right = new FormAttachment(0, 492);
-		fd_grpResults.bottom = new FormAttachment(100, -10);
+		fd_grpResults.top = new FormAttachment(0, 10);
 		fd_grpResults.left = new FormAttachment(0, 10);
+		fd_grpResults.right = new FormAttachment(0, 492);
+		fd_grpResults.bottom = new FormAttachment(100, -34);
 		grpResults.setLayoutData(fd_grpResults);
 		
 		table = new Table(grpResults, SWT.BORDER | SWT.FULL_SELECTION);
@@ -121,6 +134,13 @@ public class FPDialog extends Dialog {
 		TableColumn tblclmnYear = new TableColumn(table, SWT.NONE);
 		tblclmnYear.setWidth(100);
 		tblclmnYear.setText("Year");
+		
+		progressBar = new ProgressBar(shell, SWT.NONE);
+		FormData fd_progressBar = new FormData();
+		fd_progressBar.top = new FormAttachment(grpResults, 6);
+		fd_progressBar.right = new FormAttachment(grpResults, -10, SWT.RIGHT);
+		fd_progressBar.left = new FormAttachment(0, 20);
+		progressBar.setLayoutData(fd_progressBar);
 		
 		table.addMouseListener(new MouseListener() {
 			
@@ -155,34 +175,49 @@ public class FPDialog extends Dialog {
 			}
 		});
 		
-		fillTable();
 	}
 	
 	private void fillTable() {
-		
+		int attempts = 20;
+		int barStart = 10;
+		int barMid1 = 20;
+		int barIncrement = (100 - barMid1)/attempts;
 		try {
 			aiw.genAudioFingerPrintInfo(absolutePath, 120);
 			
+			progressBar.setSelection(barStart);
+			
 			ArrayList<String> ids = aiw.getMusicBrainzID();
+			progressBar.setSelection(barMid1);
 			for(String id : ids) {
-				Track t = mbw.getTrackById(id);
+				Track t = null;
+				while(attempts > 0) {
+					try {
+						t = mbw.getTrackById(id);
+						break;
+					} catch(IOException e) {
+						System.out.println("IO exception. Trying again...");
+						progressBar.setSelection(progressBar.getSelection()+barIncrement);
+						attempts--;
+					}
+				}	
 				if(t != null) {
 					TableItem tableItem = new TableItem(table, SWT.NONE);
 			      	tableItem.setText(0, t.getTitle());
 			      	tableItem.setText(1, t.getArtists());
 			      	tableItem.setText(2, t.getAlbum().getTitle());
 			      	tableItem.setText(3, t.getAlbum().getYear());
-
 				}
 			}
-				
+			progressBar.setSelection(100);	
 				
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			MessageBox msgBox = new MessageBox(shell, SWT.ICON_WARNING);
+			msgBox.setMessage("Element not found");
+		    msgBox.open();
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -190,12 +225,12 @@ public class FPDialog extends Dialog {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InterruptedException e) {
-			MessageBox messageBox = new MessageBox(shell, SWT.ICON_ERROR);
-		    messageBox.setMessage("Connection error, please retry");
-		    messageBox.open();
+			MessageBox errorBox = new MessageBox(shell, SWT.ICON_ERROR);
+		    errorBox.setMessage("Connection error, please retry");
+		    errorBox.open();
 		}
 	}
-
+	
 	public void setPath(String path) {
 		absolutePath = "\""+path+"\"";
 	}

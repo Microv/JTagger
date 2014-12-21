@@ -116,7 +116,8 @@ public class MusicBrainzWrapper {
 			throws SAXException, IOException, XPathExpressionException {
 		Document doc = builder.parse(recordingQuery+"recording:"+recording
 				+"+artist:"+artist);
-		
+		System.out.println(recordingQuery+"recording:"+recording
+				+"+artist:"+artist);
 		return executeQuery(doc);
 	}
 

@@ -7,13 +7,9 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageInputStream;
-import javax.xml.parsers.ParserConfigurationException;
-
 import metadata.Track;
-
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -372,12 +368,12 @@ public class TagWindow {
 		
 		ToolItem toolItem_open = new ToolItem(toolBar, SWT.NONE);
 		toolItem_open.setToolTipText("Open file");
-		toolItem_open.setImage(SWTResourceManager.getImage("JTagger/img/open.png"));
+		toolItem_open.setImage(SWTResourceManager.getImage(TagWindow.class, "/gui/img/open.png"));
 		toolItem_open.addListener(SWT.Selection, new OpenListener());
 		
 		ToolItem toolItem_openfolder = new ToolItem(toolBar, SWT.NONE);
 		toolItem_openfolder.setToolTipText("Open directory");
-		toolItem_openfolder.setImage(SWTResourceManager.getImage("JTagger/img/openf.png"));
+		toolItem_openfolder.setImage(SWTResourceManager.getImage(TagWindow.class, "/gui/img/openf.png"));
 		toolItem_openfolder.addListener(SWT.Selection, new OpenFolderListener());
 		
 		new ToolItem(toolBar, SWT.SEPARATOR);
@@ -399,13 +395,13 @@ public class TagWindow {
 				}
 			}
 		});
-		toolItem_search.setImage(SWTResourceManager.getImage("JTagger/img/search.png"));
+		toolItem_search.setImage(SWTResourceManager.getImage(TagWindow.class, "/gui/img/search.png"));
 		toolItem_search.setWidth(2);
 		
 		ToolItem toolItem_fp = new ToolItem(toolBar, SWT.NONE);
 		toolItem_fp.setToolTipText("Search by fingerprint");
 		toolItem_fp.setWidth(2);
-		toolItem_fp.setImage(SWTResourceManager.getImage("JTagger/img/audio-headset.png"));
+		toolItem_fp.setImage(SWTResourceManager.getImage(TagWindow.class, "/gui/img/audio-headset.png"));
 		toolItem_fp.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
@@ -419,6 +415,7 @@ public class TagWindow {
 					dialog = new FPDialog(new Shell(shell), SWT.TITLE);
 					dialog.setPath(toSaveTrack.getPath());
 					dialog.open();
+					
 				}
 			}
 		});
@@ -426,7 +423,7 @@ public class TagWindow {
 		ToolItem toolItem_save = new ToolItem(toolBar, SWT.NONE);
 		toolItem_save.setToolTipText("Save");
 		toolItem_save.setWidth(2);
-		toolItem_save.setImage(SWTResourceManager.getImage("JTagger/img/save.png"));
+		toolItem_save.setImage(SWTResourceManager.getImage(TagWindow.class, "/gui/img/save.png"));
 		
 		Group grpInfo = new Group(shell, SWT.NONE);
 		fd_grpCoverArt.bottom = new FormAttachment(grpInfo, -6);
@@ -568,9 +565,9 @@ public class TagWindow {
 			bi = ImageIO.read(iis);
 			lblCoverProp.setText("Dimensions\t"+bi.getWidth()+"x"+bi.getHeight());
 		} catch(IllegalArgumentException e) {
-			File noCover = new File("JTagger/img/nocover.png");
+			
 			try {
-				bi = ImageIO.read(noCover);
+				bi = ImageIO.read(getClass().getResource("img/nocover.png"));
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
