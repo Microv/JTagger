@@ -116,8 +116,7 @@ public class MusicBrainzWrapper {
 			throws SAXException, IOException, XPathExpressionException {
 		Document doc = builder.parse(recordingQuery+"recording:"+recording
 				+"+artist:"+artist);
-		System.out.println(recordingQuery+"recording:"+recording
-				+"+artist:"+artist);
+		
 		return executeQuery(doc);
 	}
 
@@ -149,5 +148,14 @@ public class MusicBrainzWrapper {
 	
 	public void setAlbumInfo(Track track) {
 		
+	}
+
+	public ArrayList<Track> getTrackByTitleAlbum(String recording,
+			String release) throws SAXException, IOException, XPathExpressionException {
+		
+		Document doc = builder.parse(recordingQuery+"recording:"+recording
+				+"+release:"+release);
+		
+		return executeQuery(doc);
 	}
 }

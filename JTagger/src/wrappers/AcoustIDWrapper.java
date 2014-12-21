@@ -1,18 +1,13 @@
 package wrappers;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 public class AcoustIDWrapper {
 
@@ -40,7 +35,7 @@ public class AcoustIDWrapper {
 	
 	public void genAudioFingerPrintInfo(String filePath, int length) throws IOException, InterruptedException {
 		
-		String[] shCommand = { "/bin/sh", "-c", "JTagger/fpcalc/fpcalc "
+		String[] shCommand = { "/bin/sh", "-c", "JTagger/fpcalc/fpcalc_LINUX_64 "
 				+ filePath};
 		p = Runtime.getRuntime().exec(shCommand);
 		p.waitFor();
@@ -90,7 +85,7 @@ public class AcoustIDWrapper {
 	    }
 	    return ids;
 	}
-	
+	/*
 	public static void main(String[] args) throws IOException, InterruptedException, JSONException {
 		
 		String filePath = "/home/michele/Scrivania/chromaprint-fpcalc-1.1-linux-x86_64/file.mp3";
@@ -108,5 +103,5 @@ public class AcoustIDWrapper {
 			System.out.println(s);
 		
 	}
-
+	*/
 }

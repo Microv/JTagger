@@ -40,8 +40,6 @@ public class FPDialog extends Dialog {
 	private String absolutePath;
 	private AcoustIDWrapper aiw;
 	private MusicBrainzWrapper mbw;
-	
-	private int pbSelection;
 
 	/**
 	 * Create the dialog.

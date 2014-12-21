@@ -249,6 +249,10 @@ public class QueryDialog extends Dialog {
 							tracks = mbw.getTrackByTitleArtist(recording, artist);
 							break;
 					}
+					else if (recording.length() > 0 && release.length() > 0) {
+						tracks = mbw.getTrackByTitleAlbum(recording, release);
+						break;
+					}
 					else if (recording.length() > 0) {
 							tracks = mbw.getTrackByTitle(recording);
 							break;
