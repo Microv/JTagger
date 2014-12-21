@@ -140,7 +140,7 @@ public class QueryDialog extends Dialog {
 		
 		Button button = new Button(shell, SWT.NONE);
 		fd_grpResults.top = new FormAttachment(button, 6);
-		button.setImage(SWTResourceManager.getImage("JTagger/img/search.png"));
+		button.setImage(SWTResourceManager.getImage(QueryDialog.class, "/gui/img/search.png"));
 		FormData fd_button = new FormData();
 		fd_button.bottom = new FormAttachment(100, -255);
 		fd_button.right = new FormAttachment(100, -22);
