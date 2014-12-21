@@ -40,7 +40,7 @@ public class AcoustIDWrapper {
 	
 	public void genAudioFingerPrintInfo(String filePath, int length) throws IOException, InterruptedException {
 		
-		String[] shCommand = { "/bin/sh", "-c", "JTagger/fpcalc/fpcalc "
+		String[] shCommand = { "/bin/sh", "-c", "JTagger/fpcalc/fpcalc_LINUX_64 "
 				+ filePath};
 		p = Runtime.getRuntime().exec(shCommand);
 		p.waitFor();
@@ -90,7 +90,7 @@ public class AcoustIDWrapper {
 	    }
 	    return ids;
 	}
-	
+	/*
 	public static void main(String[] args) throws IOException, InterruptedException, JSONException {
 		
 		String filePath = "/home/michele/Scrivania/chromaprint-fpcalc-1.1-linux-x86_64/file.mp3";
@@ -108,5 +108,5 @@ public class AcoustIDWrapper {
 			System.out.println(s);
 		
 	}
-
+	*/
 }
