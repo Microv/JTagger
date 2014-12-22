@@ -68,7 +68,7 @@ public class AcoustIDWrapper {
 	    String line = "";
 	    while ((line = reader.readLine())!= null) {
 	    	result += line;
-	    	//System.out.println(line);
+	    	System.out.println(line);
 	    }
 	    
 	    int durationStart = result.indexOf(DURATION_LABER) + DURATION_LABER.length();
