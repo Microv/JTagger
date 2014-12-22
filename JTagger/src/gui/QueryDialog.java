@@ -92,12 +92,12 @@ public class QueryDialog extends Dialog {
 		Label lblTitle = new Label(shell, SWT.NONE);
 		FormData fd_lblTitle = new FormData();
 		fd_lblTitle.left = new FormAttachment(0, 10);
-		fd_lblTitle.top = new FormAttachment(0, 20);
 		lblTitle.setLayoutData(fd_lblTitle);
 		lblTitle.setText("Recording");
 		
 		recordingSearch = new Text(shell, SWT.BORDER);
-		fd_lblTitle.bottom = new FormAttachment(recordingSearch, 0, SWT.BOTTOM);
+		fd_lblTitle.bottom = new FormAttachment(recordingSearch, 3, SWT.BOTTOM);
+		fd_lblTitle.top = new FormAttachment(recordingSearch, 3, SWT.TOP);
 		fd_lblTitle.right = new FormAttachment(recordingSearch, -6);
 		FormData fd_recordingSearch = new FormData();
 		fd_recordingSearch.left = new FormAttachment(0, 85);
@@ -106,20 +106,18 @@ public class QueryDialog extends Dialog {
 		recordingSearch.setText(tag.getFirst(FieldKey.TITLE));
 		
 		Label lblArtist = new Label(shell, SWT.NONE);
-		fd_recordingSearch.right = new FormAttachment(lblArtist, -22);
+		fd_recordingSearch.right = new FormAttachment(lblArtist, -33);
 		FormData fd_lblArtist = new FormData();
-		fd_lblArtist.left = new FormAttachment(0, 279);
-		fd_lblArtist.top = new FormAttachment(0, 20);
-		fd_lblArtist.bottom = new FormAttachment(0, 33);
+		fd_lblArtist.left = new FormAttachment(0, 277);
+		fd_lblArtist.top = new FormAttachment(lblTitle, 0, SWT.TOP);
 		lblArtist.setLayoutData(fd_lblArtist);
 		lblArtist.setText("Artist");
 		
 		artistSearch = new Text(shell, SWT.BORDER);
-		fd_lblArtist.right = new FormAttachment(100, -360);
 		FormData fd_artistSearch = new FormData();
+		fd_artistSearch.top = new FormAttachment(lblTitle, -3, SWT.TOP);
 		fd_artistSearch.bottom = new FormAttachment(lblTitle, 0, SWT.BOTTOM);
-		fd_artistSearch.left = new FormAttachment(lblArtist, 1);
-		fd_artistSearch.right = new FormAttachment(100, -189);
+		fd_artistSearch.left = new FormAttachment(0, 329);
 		artistSearch.setLayoutData(fd_artistSearch);
 		artistSearch.setText(tag.getFirst(FieldKey.ARTIST));
 		
@@ -140,8 +138,11 @@ public class QueryDialog extends Dialog {
 		releaseSearch.setText(tag.getFirst(FieldKey.ALBUM));
 		
 		Button button = new Button(shell, SWT.NONE);
+		fd_lblArtist.right = new FormAttachment(button, -257);
+		fd_artistSearch.right = new FormAttachment(button, -88);
 		button.setImage(SWTResourceManager.getImage(QueryDialog.class, "/gui/img/search.png"));
 		FormData fd_button = new FormData();
+		fd_button.bottom = new FormAttachment(lblNewLabel, 0, SWT.BOTTOM);
 		fd_button.top = new FormAttachment(recordingSearch, 0, SWT.TOP);
 		fd_button.right = new FormAttachment(100, -22);
 		button.addListener(SWT.Selection, new QueryListener());
