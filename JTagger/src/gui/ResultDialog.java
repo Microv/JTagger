@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.widgets.Button;
 
 public class ResultDialog extends Dialog {
 
@@ -36,6 +37,10 @@ public class ResultDialog extends Dialog {
 	private Text text_6;
 	private Text text_7;
 	private Text text_8;
+	private Text text_9;
+	private Text text_10;
+	private Text text_11;
+	private Text text_12;
 
 	/**
 	 * Create the dialog.
@@ -69,7 +74,7 @@ public class ResultDialog extends Dialog {
 	 */
 	private void createContents() {
 		shlRiepilogo = new Shell(getParent(), getStyle());
-		shlRiepilogo.setBackground(SWTResourceManager.getColor(60, 179, 113));
+		shlRiepilogo.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
 		shlRiepilogo.setImage(null);
 		shlRiepilogo.setSize(784, 473);
 		shlRiepilogo.setText("Riepilogo");
@@ -114,17 +119,17 @@ public class ResultDialog extends Dialog {
 		
 		Group grpLyrics = new Group(shlRiepilogo, SWT.NONE);
 		grpLyrics.setText("Lyrics");
-		grpLyrics.setBounds(263, 10, 225, 409);
+		grpLyrics.setBounds(276, 10, 224, 394);
 		
 		textLyrics = new Text(grpLyrics, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
-		textLyrics.setBounds(10, 10, 199, 377);
+		textLyrics.setBounds(10, 10, 199, 357);
 		
 		Label label_1 = new Label(shlRiepilogo, SWT.SEPARATOR | SWT.VERTICAL);
 		label_1.setBounds(506, 10, 14, 409);
 		
 		Group grpOtherInfo = new Group(shlRiepilogo, SWT.NONE);
 		grpOtherInfo.setText("Other info");
-		grpOtherInfo.setBounds(10, 176, 225, 178);
+		grpOtherInfo.setBounds(10, 176, 225, 217);
 		
 		Label lblComposer = new Label(grpOtherInfo, SWT.NONE);
 		lblComposer.setBounds(10, 10, 60, 14);
@@ -154,19 +159,39 @@ public class ResultDialog extends Dialog {
 		text_7 = new Text(grpOtherInfo, SWT.BORDER);
 		text_7.setBounds(94, 94, 117, 19);
 		
-		Label lblNScoltatori = new Label(grpOtherInfo, SWT.NONE);
-		lblNScoltatori.setText("N. ascoltatori");
-		lblNScoltatori.setBounds(10, 127, 75, 14);
-		
 		text_8 = new Text(grpOtherInfo, SWT.BORDER);
 		text_8.setBounds(94, 122, 117, 19);
 		
+		Label lblTrackN = new Label(grpOtherInfo, SWT.NONE);
+		lblTrackN.setBounds(10, 150, 60, 14);
+		lblTrackN.setText("Track n°");
+		
+		Label lblNAscoltatori = new Label(grpOtherInfo, SWT.NONE);
+		lblNAscoltatori.setBounds(10, 125, 78, 14);
+		lblNAscoltatori.setText("N° ascoltatori");
+		
+		text_9 = new Text(grpOtherInfo, SWT.BORDER);
+		text_9.setBounds(160, 147, 51, 19);
+		
+		text_10 = new Text(grpOtherInfo, SWT.BORDER);
+		text_10.setBounds(94, 147, 51, 19);
+		
+		Label lblDiscN = new Label(grpOtherInfo, SWT.NONE);
+		lblDiscN.setBounds(10, 176, 60, 14);
+		lblDiscN.setText("Disc n°");
+		
+		text_11 = new Text(grpOtherInfo, SWT.BORDER);
+		text_11.setBounds(160, 172, 51, 19);
+		
+		text_12 = new Text(grpOtherInfo, SWT.BORDER);
+		text_12.setBounds(94, 172, 51, 19);
+		
 		Group grpAmazon = new Group(shlRiepilogo, SWT.NONE);
 		grpAmazon.setText("Amazon");
-		grpAmazon.setBounds(533, 206, 229, 201);
+		grpAmazon.setBounds(533, 206, 229, 225);
 		
 		Browser browser = new Browser(grpAmazon, SWT.NONE);
-		browser.setBounds(10, 10, 205, 164);
+		browser.setBounds(10, 10, 205, 188);
 		
 		Group grpCover = new Group(shlRiepilogo, SWT.NONE);
 		grpCover.setText("Cover");
@@ -174,6 +199,14 @@ public class ResultDialog extends Dialog {
 		
 		Label lblNewLabel = new Label(grpCover, SWT.NONE);
 		lblNewLabel.setBounds(10, 10, 191, 143);
+		
+		Button btnNewButton = new Button(shlRiepilogo, SWT.NONE);
+		btnNewButton.setBounds(381, 403, 95, 28);
+		btnNewButton.setText("Salva");
+		
+		Button btnEsci = new Button(shlRiepilogo, SWT.NONE);
+		btnEsci.setText("Esci");
+		btnEsci.setBounds(280, 403, 95, 28);
 
 	}
 
