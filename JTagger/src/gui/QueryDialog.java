@@ -208,6 +208,10 @@ public class QueryDialog extends Dialog {
 					result.setAlbum(a);
 					dialog.setTrack(result);
 					dialog.open();
+					/*
+					 *  Le informazioni incapsulate nella variabile 'result', saranno utilizzate
+					 *  per ricostruire le ultime informazioni mancanti da presentare all'utente.
+					 */
 				}
 			}
 		});

@@ -238,17 +238,28 @@ import org.xml.sax.SAXException;
 	}
 	
 	// recuperare il teso della canzone tramitelo scraping | utilizzo della libreria jsoup/json
-	String getLyricsbyScraping(String q_artist, String q_track) throws IOException
+	public String getLyricsbyScraping(String q_artist, String q_track)
 	{
 	
 	String lyrics = new String("");
 	String path = "#lyrics-html";
-	jsoup_doc = Jsoup.connect( URL_LYRICS + q_artist + "/" + q_track).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
+	try {
+		jsoup_doc = Jsoup.connect( URL_LYRICS + q_artist + "/" + q_track).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
+	} catch (IOException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	}
 	Elements testo = jsoup_doc.select(path);
+	int i= 1;
 	Element e = testo.first(); // Resituisce un unico elemento.
-		for (Element test_part : e.children())
+		for (Element test_part : e.children()){
+		if(test_part.tagName() != "br")  //fuck
 			lyrics = lyrics.concat(test_part.text()).concat("\n");
-	
+		if(i%5 == 0)
+			lyrics= lyrics.concat("\n");
+		
+		i++;
+		}
 	return lyrics;
 	}
 	
@@ -260,16 +271,17 @@ import org.xml.sax.SAXException;
 	 */
 	
 	
-/*
+
 	public static void main(String []args) throws IOException, XPathExpressionException, ParserConfigurationException, SAXException
 	{
 		MusixMatchWrapper m = new MusixMatchWrapper();
-		Map<String,Object> result =m.getMatchingTrack("l'amore conta", "Ligabue");
-		System.out.println(result.get("album_copyright"));
-		m.getArtistID(m.artistName); metodo utilizzato come interfaccia, solo per recuperare id id un cantante
-		m.getMatchingLyrics(m.trackName, m.artistName);
-		System.out.println(m.getLyricsbyScraping("Ligabue", "l'amore conta"));
+	//	Map<String,Object> result =m.getMatchingTrack("l'amore conta", "Ligabue");
+	//	System.out.println(result.get("album_copyright"));
+	//	m.getArtistID(m.artistName); metodo utilizzato come interfaccia, solo per recuperare id id un cantante
+	//	m.getMatchingLyrics(m.trackName, m.artistName);
+		System.out.print(m.getLyricsbyScraping("Ligabue", "Certe Notti"));
+		
 	}
-*/
+
 	
 } // end class

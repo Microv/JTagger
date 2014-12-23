@@ -7,6 +7,15 @@ public class Album {
 	private String genre;
 	private String cover;
 	private String albumArtist;
+	private String publisher; 
+	
+	public String getPublisher(){
+		return publisher;
+	}
+	
+	public void setPublisher(Object pub){
+		publisher = (String)pub;
+	}
 	
 	public String getAlbumArtist() {
 		return albumArtist;

@@ -361,6 +361,7 @@ public class TagWindow {
 		tblclmnNewColumn.setText("Path");
 		
 		ToolBar toolBar = new ToolBar(shell, SWT.FLAT);
+		toolBar.setLayoutData(new FormData());
 		toolBar.setTouchEnabled(true);
 		
 		ToolItem toolItem_open = new ToolItem(toolBar, SWT.NONE);
