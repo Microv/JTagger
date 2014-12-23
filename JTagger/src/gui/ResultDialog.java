@@ -1,16 +1,20 @@
 package gui;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.lang.reflect.InvocationTargetException;
 
+import javax.swing.ProgressMonitor;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 
-import metadata.Album;
 import metadata.Track;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
 import wrappers.AllMusicWrapper;
@@ -29,7 +33,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.xml.sax.SAXException;
-import org.eclipse.swt.custom.CCombo;
 
 public class ResultDialog extends Dialog {
 
@@ -74,6 +77,7 @@ public class ResultDialog extends Dialog {
 		shlRiepilogo.open();
 		shlRiepilogo.layout();
 		Display display = getParent().getDisplay();
+		
 		while (!shlRiepilogo.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
@@ -100,7 +104,7 @@ public class ResultDialog extends Dialog {
 		
 		Group grpMain = new Group(shlRiepilogo, SWT.NONE);
 		grpMain.setText("Main info");
-		grpMain.setBounds(10, 10, 257, 147);
+		grpMain.setBounds(10, 10, 257, 178);
 		
 		Label lblAlbum = new Label(grpMain, SWT.NONE);
 		lblAlbum.setBounds(10, 84, 60, 14);
@@ -147,7 +151,7 @@ public class ResultDialog extends Dialog {
 		
 		Group grpOtherInfo = new Group(shlRiepilogo, SWT.NONE);
 		grpOtherInfo.setText("Other info");
-		grpOtherInfo.setBounds(10, 244, 257, 243);
+		grpOtherInfo.setBounds(10, 210, 257, 243);
 		
 		Label lblComposer = new Label(grpOtherInfo, SWT.NONE);
 		lblComposer.setBounds(10, 22, 60, 14);
@@ -251,7 +255,14 @@ public class ResultDialog extends Dialog {
 
 	public void setTrack(Track result2) {
 		this.track = result2;
-		getInfo();
+		ProgressMonitorDialog dialog = new ProgressMonitorDialog(new Shell());
+		try {
+			dialog.run(true, true, new InfoGetter());
+		} catch (InvocationTargetException | InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 	private void getInfo() {
@@ -297,5 +308,16 @@ public class ResultDialog extends Dialog {
 		*/
 		
 
+	}
+	
+	class InfoGetter implements IRunnableWithProgress {
+
+		@Override
+		public void run(IProgressMonitor arg0)
+				throws InvocationTargetException, InterruptedException {
+			getInfo();
+			
+		}
+		
 	}
 }
