@@ -93,11 +93,8 @@ public class ResultDialog extends Dialog {
 		shlRiepilogo = new Shell(getParent(), getStyle());
 		shlRiepilogo.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
 		shlRiepilogo.setImage(null);
-		shlRiepilogo.setSize(942, 546);
+		shlRiepilogo.setSize(942, 533);
 		shlRiepilogo.setText("Riepilogo");
-		
-		ProgressBar progressBar = new ProgressBar(shlRiepilogo, SWT.NONE);
-		progressBar.setBounds(10, 493, 916, 14);
 		
 		Label label = new Label(shlRiepilogo, SWT.SEPARATOR | SWT.VERTICAL);
 		label.setBounds(273, 22, 14, 465);
@@ -210,7 +207,7 @@ public class ResultDialog extends Dialog {
 		grpAmazon.setBounds(615, 194, 311, 293);
 		
 		Browser browser = new Browser(grpAmazon, SWT.NONE);
-		browser.setBounds(10, 20, 309, 243);
+		browser.setBounds(10, 20, 291, 243);
 		
 		Label lblNAscoltatori = new Label(grpAmazon, SWT.NONE);
 		lblNAscoltatori.setBounds(10, 269, 78, 14);
