@@ -169,6 +169,9 @@ public class MusicBrainzWrapper {
 	public Track getFullInfo(String recording, 
 			String artist, String release, String year) 
 					throws SAXException, IOException, XPathExpressionException {
+		int a;
+		if((a = artist.indexOf("feat.")) > 0)
+			artist = artist.substring(0, a);
 		
 		Document doc = builder.parse(recordingQuery+"recording:\""
 				+recording.replaceAll(" ", "%20")+"\""

@@ -147,7 +147,7 @@ public class ResultDialog extends Dialog {
 		
 		Group grpOtherInfo = new Group(shlRiepilogo, SWT.NONE);
 		grpOtherInfo.setText("Other info");
-		grpOtherInfo.setBounds(10, 210, 257, 243);
+		grpOtherInfo.setBounds(10, 244, 257, 243);
 		
 		Label lblComposer = new Label(grpOtherInfo, SWT.NONE);
 		lblComposer.setBounds(10, 22, 60, 14);
@@ -174,7 +174,7 @@ public class ResultDialog extends Dialog {
 		genre_text = new Text(grpOtherInfo, SWT.BORDER);
 		genre_text.setBounds(94, 81, 149, 19);
 		
-		publisher_text = new Text(grpOtherInfo, SWT.BORDER | SWT.MULTI);
+		publisher_text = new Text(grpOtherInfo, SWT.BORDER);
 		publisher_text.setBounds(94, 117, 149, 19);
 		publisher_text.setText(track.getAlbum().getPublisher());
 		
