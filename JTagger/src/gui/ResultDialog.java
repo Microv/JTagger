@@ -190,9 +190,11 @@ public class ResultDialog extends Dialog {
 		
 		trackn2_text = new Text(grpOtherInfo, SWT.BORDER);
 		trackn2_text.setBounds(192, 147, 51, 19);
+		trackn2_text.setText(track.getAlbum().getTrackCount());
 		
 		trackn1_text = new Text(grpOtherInfo, SWT.BORDER);
 		trackn1_text.setBounds(123, 147, 51, 19);
+		trackn1_text.setText(track.getTrackNum());
 		
 		Label lblDiscN = new Label(grpOtherInfo, SWT.NONE);
 		lblDiscN.setBounds(10, 176, 60, 14);
@@ -252,6 +254,9 @@ public class ResultDialog extends Dialog {
 			amw = new AllMusicWrapper();
 			lfmw = new LastFmWrapper();
 			mmw = new MusixMatchWrapper();
+			track = mbw.getFullInfo(track.getTitle(), 
+					track.getArtists(), track.getAlbum().getTitle(), 
+					track.getAlbum().getYear());
 			track.setLyrics(mmw.getLyricsbyScraping(track.getArtists(),track.getTitle()));
 			track.getAlbum().setPublisher(mmw.getMatchingTrack(track.getTitle(), track.getArtists()).get("album_copyright"));
 			

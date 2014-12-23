@@ -8,7 +8,20 @@ public class Album {
 	private String cover;
 	private String albumArtist;
 	private String publisher; 
+	private String trackCount;
 	
+	public String getTrackCount() {
+		return trackCount;
+	}
+
+	public void setTrackCount(String trackCount) {
+		this.trackCount = trackCount;
+	}
+
+	public void setPublisher(String publisher) {
+		this.publisher = publisher;
+	}
+
 	public String getPublisher(){
 		return publisher;
 	}

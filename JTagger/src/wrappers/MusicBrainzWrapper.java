@@ -48,7 +48,7 @@ public class MusicBrainzWrapper {
 			// title
 			t.setTitle(recordings.item(i).getNodeValue());
 			
-			//album informations
+			//album title
 			Album album = new Album();
 			XPathExpression exprAlbum = xpath.compile(
 					"//recording-list/recording["+(i+1)+"]"
@@ -56,6 +56,7 @@ public class MusicBrainzWrapper {
 					);
 			album.setTitle(exprAlbum.evaluate(doc));
 			
+			// year
 			XPathExpression exprYear = xpath.compile(
 					"//recording-list/recording["+(i+1)+"]"
 							+ "/release-list/release/date/text()"
@@ -64,25 +65,15 @@ public class MusicBrainzWrapper {
 			
 			t.setAlbum(album);
 			
-			// track position
-			XPathExpression exprTrack = xpath.compile(
-					"//recording-list/recording["+(i+1)+"]"
-							+ "/release-list/release/medium-list"
-							+ "/medium/track-list/track/number/text()"
-					);
-			t.setTrackNum(exprTrack.evaluate(doc));
-			
 			//artists informations
 			NodeList artists = (NodeList) xpath.evaluate(
 					"//recording-list/recording["+(i+1)+"]/artist-credit/"
 					+ "name-credit/artist/name/text()", doc, 
 					XPathConstants.NODESET);
 			
-			//Artist[] a = new Artist[artists.getLength()];
 			String artist = "";
 			for(int j = 0; j < artists.getLength(); j++) {
 				artist += artists.item(j).getNodeValue();
-				//a[j] = new Artist(artist);
 				if(j + 1 < artists.getLength())
 					artist += " feat. ";
 			}
@@ -154,10 +145,6 @@ public class MusicBrainzWrapper {
 		else
 			return null;
 	}
-	
-	public void setAlbumInfo(Track track) {
-		
-	}
 
 	public ArrayList<Track> getTrackByTitleAlbum(String recording,
 			String release) throws SAXException, IOException, XPathExpressionException {
@@ -177,5 +164,45 @@ public class MusicBrainzWrapper {
 				+"+release:\""+release.replaceAll(" ", "%20")+"\"");
 		
 		return executeQuery(doc);
+	}
+	
+	public Track getFullInfo(String recording, 
+			String artist, String release, String year) 
+					throws SAXException, IOException, XPathExpressionException {
+		
+		Document doc = builder.parse(recordingQuery+"recording:\""
+				+recording.replaceAll(" ", "%20")+"\""
+				+"+artist:\""+artist.replaceAll(" ", "%20")+"\""
+				+"+release:\""+release.replaceAll(" ", "%20")+"\""
+				+"year:"+year);
+		
+		ArrayList<Track> result = executeQuery(doc);
+		Track t = result.get(0);
+		if(t == null) 
+			return null;
+		
+		getOtherInfo(doc, t);
+		return t;
+	}
+
+	private void getOtherInfo(Document doc, Track t) 
+			throws XPathExpressionException {
+
+		// track position
+		XPathExpression expr = xpath.compile(
+				"//recording-list/recording[1]"
+						+ "/release-list/release/medium-list"
+						+ "/medium/track-list/track/number/text()"
+				);
+		t.setTrackNum(expr.evaluate(doc));
+		
+		// track count
+		expr = xpath.compile(
+				"string(//recording-list/recording[1]"
+						+ "/release-list/release/medium-list"
+						+ "/medium/track-list/@count)"
+				);
+		
+		t.getAlbum().setTrackCount(expr.evaluate(doc));
 	}
 }
