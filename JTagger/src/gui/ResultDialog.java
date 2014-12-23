@@ -205,6 +205,7 @@ public class ResultDialog extends Dialog {
 		
 		discn1_text = new Text(grpOtherInfo, SWT.BORDER);
 		discn1_text.setBounds(123, 172, 51, 19);
+		discn1_text.setText(track.getDiscNum());
 		
 		Group grpAmazon = new Group(shlRiepilogo, SWT.NONE);
 		grpAmazon.setText("Amazon");

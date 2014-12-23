@@ -7,6 +7,15 @@ public class Track {
 	private Album album;
 	private String lyrics;
 	private String trackNum;
+	private String discNum;
+	public String getDiscNum() {
+		return discNum;
+	}
+
+	public void setDiscNum(String discNum) {
+		this.discNum = discNum;
+	}
+
 	private String composer;
 	private String comment;
 	

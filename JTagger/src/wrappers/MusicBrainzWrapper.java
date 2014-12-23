@@ -99,8 +99,8 @@ public class MusicBrainzWrapper {
 		
 		Document doc = builder.parse(recordingQuery+"recording:\""
 				+recording.replaceAll(" ", "%20")+"\""
-				+"+artist:\""+artist.replaceAll(" ", "%20")+"\""
-				+"+release:\""+release.replaceAll(" ", "%20")+"\"");
+				+"+AND+artist:\""+artist.replaceAll(" ", "%20")+"\""
+				+"+AND+release:\""+release.replaceAll(" ", "%20")+"\"");
 		
 		return executeQuery(doc);
 	}
@@ -110,7 +110,7 @@ public class MusicBrainzWrapper {
 		
 		Document doc = builder.parse(recordingQuery+"recording:\""
 				+recording.replaceAll(" ", "%20")+"\""
-				+"+artist:\""+artist.replaceAll(" ", "%20")+"\"");
+				+"+AND+artist:\""+artist.replaceAll(" ", "%20")+"\"");
 		
 		return executeQuery(doc);
 	}
@@ -151,7 +151,7 @@ public class MusicBrainzWrapper {
 		
 		Document doc = builder.parse(recordingQuery+"recording:\""
 				+recording.replaceAll(" ", "%20")+"\""
-				+"+release:\""+release.replaceAll(" ", "%20")+"\"");
+				+"+AND+release:\""+release.replaceAll(" ", "%20")+"\"");
 		
 		return executeQuery(doc);
 	}
@@ -161,7 +161,7 @@ public class MusicBrainzWrapper {
 		
 		Document doc = builder.parse(recordingQuery+"artist:\""
 				+artist.replaceAll(" ", "%20")+"\""
-				+"+release:\""+release.replaceAll(" ", "%20")+"\"");
+				+"+AND+release:\""+release.replaceAll(" ", "%20")+"\"");
 		
 		return executeQuery(doc);
 	}
@@ -172,15 +172,12 @@ public class MusicBrainzWrapper {
 		
 		Document doc = builder.parse(recordingQuery+"recording:\""
 				+recording.replaceAll(" ", "%20")+"\""
-				+"+artist:\""+artist.replaceAll(" ", "%20")+"\""
-				+"+release:\""+release.replaceAll(" ", "%20")+"\""
-				+"year:"+year);
+				+"+AND+artist:\""+artist.replaceAll(" ", "%20")+"\""
+				+"+AND+release:\""+release.replaceAll(" ", "%20")+"\"");
 		
 		ArrayList<Track> result = executeQuery(doc);
-		Track t = result.get(0);
-		if(t == null) 
-			return null;
 		
+		Track t = result.get(0);
 		getOtherInfo(doc, t);
 		return t;
 	}
@@ -204,5 +201,23 @@ public class MusicBrainzWrapper {
 				);
 		
 		t.getAlbum().setTrackCount(expr.evaluate(doc));
+		
+		// disc number
+		expr = xpath.compile(
+				"//recording-list/recording[1]"
+						+ "/release-list/release/medium-list"
+						+ "/medium/position/text()"
+				);
+		
+		t.setDiscNum(expr.evaluate(doc));
+		
+		// disc count
+		expr = xpath.compile(
+				"//recording-list/recording[1]"
+						+ "/release-list/release/medium-list"
+						+ "/medium/position/text()"
+				);
+				
+		//t.getAlbum().setDiskCount(expr.evaluate(doc));
 	}
 }
