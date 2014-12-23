@@ -235,8 +235,17 @@ public class ResultDialog extends Dialog {
 		btnEsci.setText("Esci");
 		btnEsci.setBounds(338, 459, 95, 28);
 		
-		CCombo combo = new CCombo(shlRiepilogo, SWT.BORDER);
-		combo.setBounds(801, 22, 125, 21);
+		Button btnSmall = new Button(shlRiepilogo, SWT.RADIO);
+		btnSmall.setBounds(804, 38, 97, 22);
+		btnSmall.setText("Small");
+		
+		Button btnMedium = new Button(shlRiepilogo, SWT.RADIO);
+		btnMedium.setBounds(804, 66, 97, 22);
+		btnMedium.setText("Medium");
+		
+		Button btnLarge = new Button(shlRiepilogo, SWT.RADIO);
+		btnLarge.setBounds(804, 94, 97, 22);
+		btnLarge.setText("Large");
 
 	}
 
