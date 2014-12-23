@@ -241,6 +241,7 @@ public class ResultDialog extends Dialog {
 		btnSmall.setText("Small");
 		
 		Button btnMedium = new Button(shlRiepilogo, SWT.RADIO);
+		btnMedium.setSelection(true);
 		btnMedium.setBounds(804, 66, 97, 22);
 		btnMedium.setText("Medium");
 		
@@ -271,33 +272,34 @@ public class ResultDialog extends Dialog {
 		 *  Inserire all'interno del try le informazioni da assegnare
 		 *   a 'track' ( per visualizzarle nel dialog)
 		 */
-		try {
-			mbw = new MusicBrainzWrapper();
-			amw = new AllMusicWrapper();
-			lfmw = new LastFmWrapper();
-			mmw = new MusixMatchWrapper();
-			track = mbw.getFullInfo(track.getTitle(), 
-					track.getArtists(), track.getAlbum().getTitle(), 
-					track.getAlbum().getYear());
-			track.setLyrics(mmw.getLyricsbyScraping(track.getArtists(),track.getTitle()));
-			track.getAlbum().setPublisher(mmw.getMatchingTrack(track.getTitle(), track.getArtists()).get("album_copyright"));
-			
-	
-		} catch (ParserConfigurationException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		int attempts = 10;
+		while(attempts > 0) {
+			try {
+				mbw = new MusicBrainzWrapper();
+				amw = new AllMusicWrapper();
+				lfmw = new LastFmWrapper();
+				mmw = new MusixMatchWrapper();
+				track = mbw.getFullInfo(track.getTitle(), 
+						track.getArtists(), track.getAlbum().getTitle(), 
+						track.getAlbum().getYear());
+				track.setLyrics(mmw.getLyricsbyScraping(track.getArtists(),track.getTitle()));
+				track.getAlbum().setPublisher(mmw.getMatchingTrack(track.getTitle(), track.getArtists()).get("album_copyright"));
+				break;
+			} catch (ParserConfigurationException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (XPathExpressionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				System.out.println("Trying again...");
+				attempts--;
+			} catch (SAXException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		
-		
+			
 		/*mbw.setAlbumInfo(track);
 		
 		String composer = amw.getComposer(track.getTitle(), track.getArtists());
