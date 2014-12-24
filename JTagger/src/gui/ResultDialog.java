@@ -279,9 +279,9 @@ public class ResultDialog extends Dialog {
 				amw = new AllMusicWrapper();
 				lfmw = new LastFmWrapper();
 				mmw = new MusixMatchWrapper();
-				track = mbw.getFullInfo(track.getTitle(), 
+				/*track = mbw.getFullInfo(track.getTitle(), 
 						track.getArtists(), track.getAlbum().getTitle(), 
-						track.getAlbum().getYear());
+						track.getAlbum().getYear());*/
 				track.setLyrics(mmw.getLyricsbyScraping(track.getArtists(),track.getTitle()));
 				track.getAlbum().setPublisher(mmw.getMatchingTrack(track.getTitle(), track.getArtists()).get("album_copyright"));
 				break;

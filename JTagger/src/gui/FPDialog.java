@@ -40,6 +40,8 @@ public class FPDialog extends Dialog {
 	private String absolutePath;
 	private AcoustIDWrapper aiw;
 	private MusicBrainzWrapper mbw;
+	
+	private ArrayList<Track> tracks;
 
 	/**
 	 * Create the dialog.
@@ -52,6 +54,8 @@ public class FPDialog extends Dialog {
 	public FPDialog(Shell parent, int style) {
 		super(parent, style);
 		setText("SWT Dialog");
+		
+		tracks = new ArrayList<Track>();
 		
 		try {
 			aiw = new AcoustIDWrapper();
@@ -116,6 +120,10 @@ public class FPDialog extends Dialog {
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		
+		TableColumn tableColumn = new TableColumn(table, SWT.NONE);
+		tableColumn.setWidth(28);
+		tableColumn.setText("#");
+		
 		TableColumn tblclmnTitle = new TableColumn(table, SWT.NONE);
 		tblclmnTitle.setWidth(167);
 		tblclmnTitle.setText("Title");
@@ -161,14 +169,15 @@ public class FPDialog extends Dialog {
 				
 				if(titem != null) {
 					ResultDialog dialog = new ResultDialog(new Shell(shell), SWT.TITLE);
-					Track result = new Track();
+					/*Track result = new Track();
 					result.setTitle(titem.getText(0));
 					result.setArtists(titem.getText(1));
 					Album a = new Album();
 					a.setTitle(titem.getText(2));
 					a.setYear(titem.getText(3));
 					result.setAlbum(a);
-					dialog.setTrack(result);
+					dialog.setTrack(result);*/
+					dialog.setTrack(tracks.get(Integer.parseInt(titem.getText(0))-1));
 					dialog.open();
 				}
 			}
@@ -201,11 +210,13 @@ public class FPDialog extends Dialog {
 					}
 				}	
 				if(t != null) {
+					tracks.add(t);
 					TableItem tableItem = new TableItem(table, SWT.NONE);
-			      	tableItem.setText(0, t.getTitle());
-			      	tableItem.setText(1, t.getArtists());
-			      	tableItem.setText(2, t.getAlbum().getTitle());
-			      	tableItem.setText(3, t.getAlbum().getYear());
+					tableItem.setText(0, ""+(tracks.size()));
+			      	tableItem.setText(1, t.getTitle());
+			      	tableItem.setText(2, t.getArtists());
+			      	tableItem.setText(3, t.getAlbum().getTitle());
+			      	tableItem.setText(4, t.getAlbum().getYear());
 				}
 			}
 			progressBar.setSelection(100);	

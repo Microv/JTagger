@@ -46,6 +46,8 @@ public class QueryDialog extends Dialog {
 	private ProgressBar progressBar;
 	private Tag tag;
 
+	
+	private ArrayList<Track> tracks = null;
 	/**
 	 * Create the dialog.
 	 * @param parent
@@ -152,6 +154,10 @@ public class QueryDialog extends Dialog {
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		
+		TableColumn tableColumn = new TableColumn(table, SWT.NONE);
+		tableColumn.setWidth(28);
+		tableColumn.setText("#");
+		
 		TableColumn tblclmnTitle = new TableColumn(table, SWT.NONE);
 		tblclmnTitle.setWidth(167);
 		tblclmnTitle.setText("Title");
@@ -199,14 +205,15 @@ public class QueryDialog extends Dialog {
 				
 				if(titem != null) {
 					ResultDialog dialog = new ResultDialog(new Shell(shell), SWT.TITLE);
-					Track result = new Track();
+					/*Track result = new Track();
 					result.setTitle(titem.getText(0));
 					result.setArtists(titem.getText(1));
 					Album a = new Album();
 					a.setTitle(titem.getText(2));
 					a.setYear(titem.getText(3));
 					result.setAlbum(a);
-					dialog.setTrack(result);
+					dialog.setTrack(result);*/
+					dialog.setTrack(tracks.get(Integer.parseInt(titem.getText(0))-1));
 					dialog.open();
 					/*
 					 *  Le informazioni incapsulate nella variabile 'result', saranno utilizzate
@@ -235,8 +242,6 @@ public class QueryDialog extends Dialog {
 			String recording = recordingSearch.getText();
 			String artist = artistSearch.getText();
 			String release = releaseSearch.getText();
-			
-			ArrayList<Track> tracks = null;
 			
 			while(attempts > 0) {
 				try {
@@ -288,12 +293,13 @@ public class QueryDialog extends Dialog {
 				}
 			}
 			if(tracks == null) return;
-			for (Track t : tracks) {
+			for (int i = 0;  i < tracks.size(); i++) {
 				TableItem tableItem = new TableItem(table, SWT.NONE);
-		      	tableItem.setText(0, t.getTitle());
-		      	tableItem.setText(1, t.getArtists());
-		      	tableItem.setText(2, t.getAlbum().getTitle());
-		      	tableItem.setText(3, t.getAlbum().getYear());
+				tableItem.setText(0, ""+(i+1));
+		      	tableItem.setText(1, tracks.get(i).getTitle());
+		      	tableItem.setText(2, tracks.get(i).getArtists());
+		      	tableItem.setText(3, tracks.get(i).getAlbum().getTitle());
+		      	tableItem.setText(4, tracks.get(i).getAlbum().getYear());
 			}
 			progressBar.setSelection(100);
 		}

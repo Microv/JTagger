@@ -79,6 +79,41 @@ public class MusicBrainzWrapper {
 			}
 			t.setArtists(artist);
 			
+			// track position
+			XPathExpression expr = xpath.compile(
+					"//recording-list/recording[1]"
+							+ "/release-list/release/medium-list"
+							+ "/medium/track-list/track/number/text()"
+					);
+			t.setTrackNum(expr.evaluate(doc));
+			
+			// track count
+			expr = xpath.compile(
+					"string(//recording-list/recording[1]"
+							+ "/release-list/release/medium-list"
+							+ "/medium/track-list/@count)"
+					);
+			
+			t.getAlbum().setTrackCount(expr.evaluate(doc));
+			
+			// disc number
+			expr = xpath.compile(
+					"//recording-list/recording[1]"
+							+ "/release-list/release/medium-list"
+							+ "/medium/position/text()"
+					);
+			
+			t.setDiscNum(expr.evaluate(doc));
+			
+			// disc count
+			/*expr = xpath.compile(
+					"//recording-list/recording[1]"
+							+ "/release-list/release/medium-list"
+							+ "/medium/position/text()"
+					);
+					
+			t.getAlbum().setDiskCount(expr.evaluate(doc));*/
+			
 			tracks.add(t);
 		}
 		return tracks;
@@ -180,47 +215,7 @@ public class MusicBrainzWrapper {
 		
 		ArrayList<Track> result = executeQuery(doc);
 		
-		Track t = result.get(0);
-		getOtherInfo(doc, t);
-		return t;
+		return result.get(0);
 	}
 
-	private void getOtherInfo(Document doc, Track t) 
-			throws XPathExpressionException {
-
-		// track position
-		XPathExpression expr = xpath.compile(
-				"//recording-list/recording[1]"
-						+ "/release-list/release/medium-list"
-						+ "/medium/track-list/track/number/text()"
-				);
-		t.setTrackNum(expr.evaluate(doc));
-		
-		// track count
-		expr = xpath.compile(
-				"string(//recording-list/recording[1]"
-						+ "/release-list/release/medium-list"
-						+ "/medium/track-list/@count)"
-				);
-		
-		t.getAlbum().setTrackCount(expr.evaluate(doc));
-		
-		// disc number
-		expr = xpath.compile(
-				"//recording-list/recording[1]"
-						+ "/release-list/release/medium-list"
-						+ "/medium/position/text()"
-				);
-		
-		t.setDiscNum(expr.evaluate(doc));
-		
-		// disc count
-		expr = xpath.compile(
-				"//recording-list/recording[1]"
-						+ "/release-list/release/medium-list"
-						+ "/medium/position/text()"
-				);
-				
-		//t.getAlbum().setDiskCount(expr.evaluate(doc));
-	}
 }
