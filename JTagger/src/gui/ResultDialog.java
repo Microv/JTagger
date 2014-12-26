@@ -2,8 +2,6 @@ package gui;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-
-import javax.swing.ProgressMonitor;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 
@@ -14,7 +12,6 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
 import wrappers.AllMusicWrapper;
@@ -25,7 +22,6 @@ import wrappers.MusixMatchWrapper;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.browser.Browser;
@@ -101,14 +97,14 @@ public class ResultDialog extends Dialog {
 		
 		Group grpMain = new Group(shlRiepilogo, SWT.NONE);
 		grpMain.setText("Main info");
-		grpMain.setBounds(10, 10, 257, 178);
+		grpMain.setBounds(10, 10, 257, 194);
 		
 		Label lblAlbum = new Label(grpMain, SWT.NONE);
-		lblAlbum.setBounds(10, 84, 60, 14);
+		lblAlbum.setBounds(10, 110, 60, 14);
 		lblAlbum.setText("Album");
 		
 		Label lblTitle = new Label(grpMain, SWT.NONE);
-		lblTitle.setBounds(10, 52, 60, 14);
+		lblTitle.setBounds(10, 65, 60, 14);
 		lblTitle.setText("Title");
 		
 		Label lblArtist = new Label(grpMain, SWT.NONE);
@@ -116,23 +112,24 @@ public class ResultDialog extends Dialog {
 		lblArtist.setText("Artist");
 		
 		Label lblYear = new Label(grpMain, SWT.NONE);
-		lblYear.setBounds(10, 114, 60, 14);
+		lblYear.setBounds(10, 159, 60, 14);
 		lblYear.setText("Year");
 		
-		album_text = new Text(grpMain, SWT.BORDER);
-		album_text.setBounds(94, 79, 149, 19);
+		album_text = new Text(grpMain, SWT.BORDER | SWT.MULTI | SWT.WRAP);
+		album_text.setBounds(94, 110, 149, 38);
 		album_text.setText(track.getAlbum().getTitle());
 		
+		
 		year_text = new Text(grpMain, SWT.BORDER);
-		year_text.setBounds(94, 109, 149, 19);
+		year_text.setBounds(94, 154, 149, 19);
 		year_text.setText(track.getAlbum().getYear());
 		
-		title_text = new Text(grpMain, SWT.BORDER);
-		title_text.setBounds(94, 47, 149, 19);
+		title_text = new Text(grpMain, SWT.BORDER | SWT.WRAP | SWT.MULTI);
+		title_text.setBounds(94, 65, 149, 39);
 		title_text.setText(track.getTitle());
 		
-		artist_text = new Text(grpMain, SWT.BORDER);
-		artist_text.setBounds(94, 15, 149, 19);
+		artist_text = new Text(grpMain, SWT.BORDER | SWT.WRAP | SWT.MULTI);
+		artist_text.setBounds(94, 15, 149, 44);
 		artist_text.setText(track.getArtists());
 		
 		Group grpLyrics = new Group(shlRiepilogo, SWT.NONE);
@@ -155,54 +152,54 @@ public class ResultDialog extends Dialog {
 		lblComposer.setText("Composer");
 		
 		Label lblAlbumArtist = new Label(grpOtherInfo, SWT.NONE);
-		lblAlbumArtist.setBounds(10, 54, 78, 14);
+		lblAlbumArtist.setBounds(10, 69, 78, 14);
 		lblAlbumArtist.setText("Album artist");
 		
 		Label lblGenre = new Label(grpOtherInfo, SWT.NONE);
-		lblGenre.setBounds(10, 86, 60, 14);
+		lblGenre.setBounds(10, 120, 60, 14);
 		lblGenre.setText("Genre");
 		
 		Label lblPublisher = new Label(grpOtherInfo, SWT.NONE);
-		lblPublisher.setBounds(10, 122, 60, 14);
+		lblPublisher.setBounds(10, 157, 60, 14);
 		lblPublisher.setText("Publisher");
 		
-		composer_text = new Text(grpOtherInfo, SWT.BORDER);
-		composer_text.setBounds(94, 17, 149, 19);
+		composer_text = new Text(grpOtherInfo, SWT.BORDER | SWT.WRAP | SWT.MULTI);
+		composer_text.setBounds(94, 17, 149, 40);
 		composer_text.setText(track.getComposer());
 		
-		albumArtist_text = new Text(grpOtherInfo, SWT.BORDER);
-		albumArtist_text.setBounds(94, 49, 149, 19);
+		albumArtist_text = new Text(grpOtherInfo, SWT.BORDER | SWT.WRAP | SWT.MULTI);
+		albumArtist_text.setBounds(94, 69, 149, 40);
 		albumArtist_text.setText(track.getAlbum().getAlbumArtist());
 		
 		genre_text = new Text(grpOtherInfo, SWT.BORDER);
-		genre_text.setBounds(94, 81, 149, 19);
+		genre_text.setBounds(94, 115, 149, 19);
 		
 		publisher_text = new Text(grpOtherInfo, SWT.BORDER);
-		publisher_text.setBounds(94, 117, 149, 19);
+		publisher_text.setBounds(94, 152, 149, 19);
 		publisher_text.setText(track.getAlbum().getPublisher());
 		
 		Label lblTrackN = new Label(grpOtherInfo, SWT.NONE);
-		lblTrackN.setBounds(10, 163, 60, 14);
+		lblTrackN.setBounds(10, 182, 60, 14);
 		lblTrackN.setText("Track n°");
 		
 		trackn2_text = new Text(grpOtherInfo, SWT.BORDER);
-		trackn2_text.setBounds(192, 158, 51, 19);
+		trackn2_text.setBounds(192, 177, 51, 19);
 		trackn2_text.setText(track.getAlbum().getTrackCount());
 		
 		trackn1_text = new Text(grpOtherInfo, SWT.BORDER);
-		trackn1_text.setBounds(123, 158, 51, 19);
+		trackn1_text.setBounds(123, 177, 51, 19);
 		trackn1_text.setText(track.getTrackNum());
 		
 		Label lblDiscN = new Label(grpOtherInfo, SWT.NONE);
-		lblDiscN.setBounds(10, 193, 60, 14);
+		lblDiscN.setBounds(10, 207, 60, 14);
 		lblDiscN.setText("Disc n°");
 		
 		discn2_text = new Text(grpOtherInfo, SWT.BORDER);
-		discn2_text.setBounds(192, 188, 51, 19);
+		discn2_text.setBounds(192, 202, 51, 19);
 		discn2_text.setText(track.getAlbum().getMediumCount());
 		
 		discn1_text = new Text(grpOtherInfo, SWT.BORDER);
-		discn1_text.setBounds(123, 188, 51, 19);
+		discn1_text.setBounds(123, 202, 51, 19);
 		discn1_text.setText(track.getDiscNum());
 		
 		Group grpAmazon = new Group(shlRiepilogo, SWT.NONE);

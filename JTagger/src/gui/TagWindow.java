@@ -329,12 +329,6 @@ public class TagWindow {
 		scrolledComposite.setContent(textLyrics);
 		scrolledComposite.setMinSize(textLyrics.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		
-		TabItem tbpmWikipedia = new TabItem(tabFolder, SWT.NONE);
-		tbpmWikipedia.setText("Wikipedia");
-		
-		Browser browser = new Browser(tabFolder, SWT.NONE);
-		tbpmWikipedia.setControl(browser);
-		
 		table = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
 		
 		Label lblAlbumArtist = new Label(group_1, SWT.NONE);
