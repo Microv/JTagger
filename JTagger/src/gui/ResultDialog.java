@@ -1,7 +1,11 @@
 package gui;
 
+import java.awt.Desktop;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 
@@ -12,6 +16,8 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
 import wrappers.AllMusicWrapper;
@@ -29,6 +35,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.xml.sax.SAXException;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 
 public class ResultDialog extends Dialog {
 
@@ -89,15 +97,15 @@ public class ResultDialog extends Dialog {
 		shlRiepilogo = new Shell(getParent(), getStyle());
 		shlRiepilogo.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
 		shlRiepilogo.setImage(null);
-		shlRiepilogo.setSize(942, 533);
+		shlRiepilogo.setSize(942, 566);
 		shlRiepilogo.setText("Riepilogo");
 		
 		Label label = new Label(shlRiepilogo, SWT.SEPARATOR | SWT.VERTICAL);
-		label.setBounds(273, 22, 14, 465);
+		label.setBounds(273, 44, 14, 443);
 		
 		Group grpMain = new Group(shlRiepilogo, SWT.NONE);
 		grpMain.setText("Main info");
-		grpMain.setBounds(10, 10, 257, 194);
+		grpMain.setBounds(10, 44, 257, 194);
 		
 		Label lblAlbum = new Label(grpMain, SWT.NONE);
 		lblAlbum.setBounds(10, 110, 60, 14);
@@ -134,18 +142,19 @@ public class ResultDialog extends Dialog {
 		
 		Group grpLyrics = new Group(shlRiepilogo, SWT.NONE);
 		grpLyrics.setText("Lyrics");
-		grpLyrics.setBounds(293, 10, 296, 443);
+		grpLyrics.setBounds(293, 44, 296, 443);
 		
 		textLyrics = new Text(grpLyrics, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
+		textLyrics.setFont(SWTResourceManager.getFont("Sans", 10, SWT.NORMAL));
 		textLyrics.setBounds(10, 20, 276, 413);
 		textLyrics.setText(track.getLyrics());
 		
 		Label label_1 = new Label(shlRiepilogo, SWT.SEPARATOR | SWT.VERTICAL);
-		label_1.setBounds(595, 22, 14, 465);
+		label_1.setBounds(595, 44, 14, 443);
 		
 		Group grpOtherInfo = new Group(shlRiepilogo, SWT.NONE);
 		grpOtherInfo.setText("Other info");
-		grpOtherInfo.setBounds(10, 210, 257, 243);
+		grpOtherInfo.setBounds(10, 272, 257, 243);
 		
 		Label lblComposer = new Label(grpOtherInfo, SWT.NONE);
 		lblComposer.setBounds(10, 22, 60, 14);
@@ -204,7 +213,7 @@ public class ResultDialog extends Dialog {
 		
 		Group grpAmazon = new Group(shlRiepilogo, SWT.NONE);
 		grpAmazon.setText("Amazon");
-		grpAmazon.setBounds(615, 194, 311, 293);
+		grpAmazon.setBounds(615, 238, 311, 293);
 		
 		Browser browser = new Browser(grpAmazon, SWT.NONE);
 		browser.setBounds(10, 20, 291, 243);
@@ -218,7 +227,7 @@ public class ResultDialog extends Dialog {
 		
 		Group grpCover = new Group(shlRiepilogo, SWT.NONE);
 		grpCover.setText("Cover");
-		grpCover.setBounds(615, 10, 180, 178);
+		grpCover.setBounds(615, 44, 180, 178);
 		
 		Label lblCover = new Label(grpCover, SWT.NONE);
 		lblCover.setBounds(10, 10, 160, 158);
@@ -229,25 +238,57 @@ public class ResultDialog extends Dialog {
 			public void widgetSelected(SelectionEvent e) {
 			}
 		});
-		btnNewButton.setBounds(455, 459, 95, 28);
+		btnNewButton.setBounds(449, 503, 95, 28);
 		btnNewButton.setText("Salva");
 		
 		Button btnEsci = new Button(shlRiepilogo, SWT.NONE);
 		btnEsci.setText("Esci");
-		btnEsci.setBounds(338, 459, 95, 28);
+		btnEsci.setBounds(336, 503, 95, 28);
 		
 		Button btnSmall = new Button(shlRiepilogo, SWT.RADIO);
-		btnSmall.setBounds(804, 38, 97, 22);
+		btnSmall.setBounds(801, 63, 97, 22);
 		btnSmall.setText("Small");
 		
 		Button btnMedium = new Button(shlRiepilogo, SWT.RADIO);
 		btnMedium.setSelection(true);
-		btnMedium.setBounds(804, 66, 97, 22);
+		btnMedium.setBounds(801, 91, 97, 22);
 		btnMedium.setText("Medium");
 		
 		Button btnLarge = new Button(shlRiepilogo, SWT.RADIO);
-		btnLarge.setBounds(804, 94, 97, 22);
+		btnLarge.setBounds(801, 119, 97, 22);
 		btnLarge.setText("Large");
+		
+		ToolBar toolBar = new ToolBar(shlRiepilogo, SWT.FLAT | SWT.RIGHT);
+		toolBar.setBounds(700, 0, 236, 38);
+		
+		ToolItem toolItem_mb = new ToolItem(toolBar, SWT.NONE);
+		toolItem_mb.setImage(SWTResourceManager.getImage("/home/michele/Scrivania/icon-32.png"));
+		toolItem_mb.addListener(SWT.Selection, new BrowserListener("http://musicbrainz.org/"));
+		
+		ToolItem toolItem_amz = new ToolItem(toolBar, SWT.NONE);
+		toolItem_amz.setImage(SWTResourceManager.getImage("/home/michele/Scrivania/am-icon.png"));
+		toolItem_amz.addListener(SWT.Selection, new BrowserListener("http://www.amazon.com/"));
+		
+		ToolItem toolItem_lf = new ToolItem(toolBar, SWT.NONE);
+		toolItem_lf.setImage(SWTResourceManager.getImage("/home/michele/Scrivania/lfm-icon.png"));
+		toolItem_lf.addListener(SWT.Selection, new BrowserListener("http://www.last.fm"));
+		
+		ToolItem toolItem_mm = new ToolItem(toolBar, SWT.NONE);
+		toolItem_mm.setImage(SWTResourceManager.getImage("/home/michele/Scrivania/mm-icon.png"));
+		toolItem_mm.addListener(SWT.Selection, new BrowserListener("https://www.musixmatch.com/"));
+		
+		ToolItem toolItem_am = new ToolItem(toolBar, SWT.NONE);
+		toolItem_am.setImage(SWTResourceManager.getImage("/home/michele/Scrivania/am-logo.png"));
+		toolItem_am.addListener(SWT.Selection, new BrowserListener("http://www.allmusic.com/"));
+		
+		ToolItem toolItem_aid = new ToolItem(toolBar, SWT.NONE);
+		toolItem_aid.setImage(SWTResourceManager.getImage("/home/michele/Scrivania/aid-icon.png"));
+		toolItem_aid.addListener(SWT.Selection, new BrowserListener("https://acoustid.org/"));
+		
+		Label lblPoweredBy = new Label(shlRiepilogo, SWT.NONE);
+		lblPoweredBy.setFont(SWTResourceManager.getFont("Sans", 10, SWT.NORMAL));
+		lblPoweredBy.setBounds(616, 10, 78, 13);
+		lblPoweredBy.setText("Powered By");
 
 	}
 
@@ -314,5 +355,27 @@ public class ResultDialog extends Dialog {
 			
 		}
 		
+	}
+	
+	class BrowserListener implements Listener {
+		
+		private String url;
+		public BrowserListener(String url) {
+			this.url = url;
+		}
+		
+		@Override
+		public void handleEvent(Event arg0) {
+			
+			if(Desktop.isDesktopSupported())
+			{
+			  try {
+				Desktop.getDesktop().browse(new URI(url));
+			} catch (IOException | URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			}
+		}
 	}
 }
