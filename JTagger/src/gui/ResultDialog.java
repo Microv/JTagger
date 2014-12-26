@@ -262,27 +262,27 @@ public class ResultDialog extends Dialog {
 		toolBar.setBounds(700, 0, 236, 38);
 		
 		ToolItem toolItem_mb = new ToolItem(toolBar, SWT.NONE);
-		toolItem_mb.setImage(SWTResourceManager.getImage("/home/michele/Scrivania/icon-32.png"));
+		toolItem_mb.setImage(SWTResourceManager.getImage(ResultDialog.class, "/gui/img/icon-32.png"));
 		toolItem_mb.addListener(SWT.Selection, new BrowserListener("http://musicbrainz.org/"));
 		
 		ToolItem toolItem_amz = new ToolItem(toolBar, SWT.NONE);
-		toolItem_amz.setImage(SWTResourceManager.getImage("/home/michele/Scrivania/am-icon.png"));
+		toolItem_amz.setImage(SWTResourceManager.getImage(ResultDialog.class, "/gui/img/am-icon.png"));
 		toolItem_amz.addListener(SWT.Selection, new BrowserListener("http://www.amazon.com/"));
 		
 		ToolItem toolItem_lf = new ToolItem(toolBar, SWT.NONE);
-		toolItem_lf.setImage(SWTResourceManager.getImage("/home/michele/Scrivania/lfm-icon.png"));
+		toolItem_lf.setImage(SWTResourceManager.getImage(ResultDialog.class, "/gui/img/lfm-icon.png"));
 		toolItem_lf.addListener(SWT.Selection, new BrowserListener("http://www.last.fm"));
 		
 		ToolItem toolItem_mm = new ToolItem(toolBar, SWT.NONE);
-		toolItem_mm.setImage(SWTResourceManager.getImage("/home/michele/Scrivania/mm-icon.png"));
+		toolItem_mm.setImage(SWTResourceManager.getImage(ResultDialog.class, "/gui/img/mm-icon.png"));
 		toolItem_mm.addListener(SWT.Selection, new BrowserListener("https://www.musixmatch.com/"));
 		
 		ToolItem toolItem_am = new ToolItem(toolBar, SWT.NONE);
-		toolItem_am.setImage(SWTResourceManager.getImage("/home/michele/Scrivania/am-logo.png"));
+		toolItem_am.setImage(SWTResourceManager.getImage(ResultDialog.class, "/gui/img/am-logo.png"));
 		toolItem_am.addListener(SWT.Selection, new BrowserListener("http://www.allmusic.com/"));
 		
 		ToolItem toolItem_aid = new ToolItem(toolBar, SWT.NONE);
-		toolItem_aid.setImage(SWTResourceManager.getImage("/home/michele/Scrivania/aid-icon.png"));
+		toolItem_aid.setImage(SWTResourceManager.getImage(ResultDialog.class, "/gui/img/aid-icon.png"));
 		toolItem_aid.addListener(SWT.Selection, new BrowserListener("https://acoustid.org/"));
 		
 		Label lblPoweredBy = new Label(shlRiepilogo, SWT.NONE);
