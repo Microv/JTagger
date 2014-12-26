@@ -9,7 +9,17 @@ public class Album {
 	private String albumArtist;
 	private String publisher; 
 	private String trackCount;
+	private String release_id;
+	private String mediumCount;
 	
+	public String getRelease_id() {
+		return release_id;
+	}
+
+	public void setRelease_id(String release_id) {
+		this.release_id = release_id;
+	}
+
 	public String getTrackCount() {
 		return trackCount;
 	}
@@ -73,6 +83,15 @@ public class Album {
 	public void setCover(String cover) {
 		this.cover = cover;
 	}
+
+	public void setMediumCount(String mCount) {
+		mediumCount = mCount;
+	}
+
+	public String getMediumCount() {
+		return mediumCount;
+	}
+
 	
 	
 }

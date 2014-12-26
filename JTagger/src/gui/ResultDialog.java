@@ -168,9 +168,11 @@ public class ResultDialog extends Dialog {
 		
 		composer_text = new Text(grpOtherInfo, SWT.BORDER);
 		composer_text.setBounds(94, 17, 149, 19);
+		composer_text.setText(track.getComposer());
 		
 		albumArtist_text = new Text(grpOtherInfo, SWT.BORDER);
 		albumArtist_text.setBounds(94, 49, 149, 19);
+		albumArtist_text.setText(track.getAlbum().getAlbumArtist());
 		
 		genre_text = new Text(grpOtherInfo, SWT.BORDER);
 		genre_text.setBounds(94, 81, 149, 19);
@@ -197,6 +199,7 @@ public class ResultDialog extends Dialog {
 		
 		discn2_text = new Text(grpOtherInfo, SWT.BORDER);
 		discn2_text.setBounds(192, 188, 51, 19);
+		discn2_text.setText(track.getAlbum().getMediumCount());
 		
 		discn1_text = new Text(grpOtherInfo, SWT.BORDER);
 		discn1_text.setBounds(123, 188, 51, 19);
@@ -279,11 +282,14 @@ public class ResultDialog extends Dialog {
 				amw = new AllMusicWrapper();
 				lfmw = new LastFmWrapper();
 				mmw = new MusixMatchWrapper();
-				/*track = mbw.getFullInfo(track.getTitle(), 
-						track.getArtists(), track.getAlbum().getTitle(), 
-						track.getAlbum().getYear());*/
+				
+				mbw.setAlbumInformations(track);
 				track.setLyrics(mmw.getLyricsbyScraping(track.getArtists(),track.getTitle()));
 				track.getAlbum().setPublisher(mmw.getMatchingTrack(track.getTitle(), track.getArtists()).get("album_copyright"));
+				
+				// da sostituire	
+				String composer = amw.getComposer(track.getTitle(), track.getArtists());
+				track.setComposer(composer);
 				break;
 			} catch (ParserConfigurationException e1) {
 				// TODO Auto-generated catch block
@@ -299,14 +305,7 @@ public class ResultDialog extends Dialog {
 				e.printStackTrace();
 			}
 		}
-			
-		/*mbw.setAlbumInfo(track);
 		
-		String composer = amw.getComposer(track.getTitle(), track.getArtists());
-		track.setComposer(composer);
-		*/
-		
-
 	}
 	
 	class InfoGetter implements IRunnableWithProgress {

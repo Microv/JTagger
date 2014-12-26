@@ -22,7 +22,7 @@ import metadata.Track;
 public class MusicBrainzWrapper {
 	
 	private final static String recordingQuery = "http://musicbrainz.org/ws/2/recording/?limit=25&query="; 
-	//private final static String releaseQuery = "http://musicbrainz.org/ws/2/release/?query="; 
+	private final static String releaseQuery = "http://musicbrainz.org/ws/2/release/?query="; 
 	
 	private DocumentBuilderFactory factory;
 	private DocumentBuilder builder;
@@ -81,7 +81,7 @@ public class MusicBrainzWrapper {
 			
 			// track position
 			XPathExpression expr = xpath.compile(
-					"//recording-list/recording[1]"
+					"//recording-list/recording["+(i+1)+"]"
 							+ "/release-list/release/medium-list"
 							+ "/medium/track-list/track/number/text()"
 					);
@@ -89,7 +89,7 @@ public class MusicBrainzWrapper {
 			
 			// track count
 			expr = xpath.compile(
-					"string(//recording-list/recording[1]"
+					"string(//recording-list/recording["+(i+1)+"]"
 							+ "/release-list/release/medium-list"
 							+ "/medium/track-list/@count)"
 					);
@@ -98,21 +98,20 @@ public class MusicBrainzWrapper {
 			
 			// disc number
 			expr = xpath.compile(
-					"//recording-list/recording[1]"
+					"//recording-list/recording["+(i+1)+"]"
 							+ "/release-list/release/medium-list"
 							+ "/medium/position/text()"
 					);
 			
 			t.setDiscNum(expr.evaluate(doc));
 			
-			// disc count
-			/*expr = xpath.compile(
-					"//recording-list/recording[1]"
-							+ "/release-list/release/medium-list"
-							+ "/medium/position/text()"
+			// album id
+			expr = xpath.compile(
+					"string(//recording-list/recording["+(i+1)+"]"
+							+ "/release-list/release/@id)"
 					);
-					
-			t.getAlbum().setDiskCount(expr.evaluate(doc));*/
+			
+			t.getAlbum().setRelease_id(expr.evaluate(doc));
 			
 			tracks.add(t);
 		}
@@ -201,21 +200,25 @@ public class MusicBrainzWrapper {
 		return executeQuery(doc);
 	}
 	
-	public Track getFullInfo(String recording, 
-			String artist, String release, String year) 
-					throws SAXException, IOException, XPathExpressionException {
-		int a;
-		if((a = artist.indexOf("feat.")) > 0)
-			artist = artist.substring(0, a);
+	public void setAlbumInformations(Track t) 
+			throws SAXException, IOException, XPathExpressionException {
 		
-		Document doc = builder.parse(recordingQuery+"recording:\""
-				+recording.replaceAll(" ", "%20")+"\""
-				+"+AND+artist:\""+artist.replaceAll(" ", "%20")+"\""
-				+"+AND+release:\""+release.replaceAll(" ", "%20")+"\"");
+		Document doc = builder.parse(releaseQuery
+				+"reid:"+t.getAlbum().getRelease_id());
 		
-		ArrayList<Track> result = executeQuery(doc);
+		// album artist
+		XPathExpression expr = xpath.compile(
+				"//artist-credit/name-credit/artist/name/text()"
+				);
+		t.getAlbum().setAlbumArtist(expr.evaluate(doc));
 		
-		return result.get(0);
+		// disc count
+		expr = xpath.compile(
+				"string(//medium-list[1]/@count)"
+		);
+							
+		t.getAlbum().setMediumCount(expr.evaluate(doc));
+		
 	}
-
+	
 }
