@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.Desktop;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
@@ -221,7 +222,16 @@ public class ResultDialog extends Dialog {
 		
 		Browser browser = new Browser(grpAmazon, SWT.NONE);
 		browser.setBounds(10, 20, 291, 243);
-		browser.setUrl("file:///C:/Users/Giovanni/git/JTagger-1.0/html/amazon.html");
+		
+		//	Get real URL without specifying the absolute path (computer file system path)
+		String url;
+		try {
+			url = new File("html/amazon.html").getCanonicalPath();
+			browser.setUrl(url);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		Label lblNAscoltatori = new Label(grpAmazon, SWT.NONE);
 		lblNAscoltatori.setBounds(10, 269, 78, 14);
