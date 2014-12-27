@@ -1,43 +1,26 @@
 package wrappers;
 
-import java.io.IOException;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
+import java.net.Proxy;
 
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
+import de.umass.lastfm.Album;
+import de.umass.lastfm.Caller;
+import de.umass.lastfm.ImageSize;
+import de.umass.lastfm.Track;
 
 public class LastFmWrapper {
-	
-	private static String url = "http://ws.audioscrobbler.com/2.0"
-			+ "/?method=track.getInfo&api_key=db281cbe739ed74d323678c3bfda72d0";
-	private DocumentBuilderFactory factory;
-	private DocumentBuilder builder;
-	private XPathFactory xPathfactory;
-	private XPath xpath;
-	
-	public LastFmWrapper() throws ParserConfigurationException {
-		factory = DocumentBuilderFactory.newInstance();
-		builder = factory.newDocumentBuilder();
-		xPathfactory = XPathFactory.newInstance();
-		xpath = xPathfactory.newXPath();
-	}
-	
-	public String getCover(String track, String artist) 
-			throws SAXException, IOException, XPathExpressionException {
+
+	public static void main(String[] args) {
+		Caller.getInstance().setUserAgent("tst");
+		Caller.getInstance().setProxy(Proxy.NO_PROXY);
 		
-		Document doc = builder.parse(url+"&artist="+artist+"&track="+track);
-		XPathExpression exprAlbum = xpath.compile(
-				"//image[@size='extralarge']/text()"
-				);
-		return exprAlbum.evaluate(doc);
+		String apiKey = "84b2abff619c0e3bd04cceb4682e2348";
+		String artistName = "kiss", song = "strutter", albumName = "kiss";
+		Track track = Track.getInfo(artistName, song, apiKey);
+		System.out.println("Song: "+song+"\tArtist: " + artistName + "\tAlbum: " + albumName);
+		System.out.println("Listeners: " + track.getListeners());
+		Album album = Album.getInfo(artistName, albumName, apiKey);
+		String imgurl = album.getImageURL(ImageSize.MEGA);
+		System.out.println(imgurl);
 	}
-	
-	
-	
+
 }

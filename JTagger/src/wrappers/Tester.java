@@ -21,7 +21,7 @@ public class Tester {
 		
 		MusicBrainzWrapper mbw = new MusicBrainzWrapper();
 		AllMusicWrapper amw = new AllMusicWrapper();
-		LastFmWrapper lfmw = new LastFmWrapper();
+		RawLastFmWrapper lfmw = new RawLastFmWrapper();
 		ArrayList<Track> tracks = mbw.getTrackByTitle(recording);
 		//ArrayList<Track> tracks = mbw.getTrackByTitleAndArtist("At my most beautiful", "R.E.M.");
 		//ArrayList<Track> tracks = mbw.getTrackByTitleAndAlbum(recording, album);

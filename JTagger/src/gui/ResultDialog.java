@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
 import wrappers.AllMusicWrapper;
+import wrappers.AmazonWrapper;
 import wrappers.LastFmWrapper;
 import wrappers.MusicBrainzWrapper;
 import wrappers.MusixMatchWrapper;
@@ -189,7 +190,7 @@ public class ResultDialog extends Dialog {
 		
 		Label lblTrackN = new Label(grpOtherInfo, SWT.NONE);
 		lblTrackN.setBounds(10, 182, 60, 14);
-		lblTrackN.setText("Track nÂ°");
+		lblTrackN.setText("Track n°");
 		
 		trackn2_text = new Text(grpOtherInfo, SWT.BORDER);
 		trackn2_text.setBounds(192, 177, 51, 19);
@@ -201,7 +202,7 @@ public class ResultDialog extends Dialog {
 		
 		Label lblDiscN = new Label(grpOtherInfo, SWT.NONE);
 		lblDiscN.setBounds(10, 207, 60, 14);
-		lblDiscN.setText("Disc nÂ°");
+		lblDiscN.setText("Disc n°");
 		
 		discn2_text = new Text(grpOtherInfo, SWT.BORDER);
 		discn2_text.setBounds(192, 202, 51, 19);
@@ -217,10 +218,11 @@ public class ResultDialog extends Dialog {
 		
 		Browser browser = new Browser(grpAmazon, SWT.NONE);
 		browser.setBounds(10, 20, 291, 243);
+		browser.setUrl("file:///C:/Users/Giovanni/git/JTagger-1.0/html/amazon.html");
 		
 		Label lblNAscoltatori = new Label(grpAmazon, SWT.NONE);
 		lblNAscoltatori.setBounds(10, 269, 78, 14);
-		lblNAscoltatori.setText("NÂ° ascoltatori");
+		lblNAscoltatori.setText("N° ascoltatori");
 		
 		ascoltatori_text = new Text(grpAmazon, SWT.BORDER);
 		ascoltatori_text.setBounds(109, 264, 105, 19);
@@ -315,6 +317,7 @@ public class ResultDialog extends Dialog {
 		AllMusicWrapper amw;
 		LastFmWrapper lfmw;
 		MusixMatchWrapper mmw;
+		AmazonWrapper aw;
 		/*
 		 *  Inserire all'interno del try le informazioni da assegnare
 		 *   a 'track' ( per visualizzarle nel dialog)
@@ -326,6 +329,8 @@ public class ResultDialog extends Dialog {
 				amw = new AllMusicWrapper();
 				lfmw = new LastFmWrapper();
 				mmw = new MusixMatchWrapper();
+				aw = new AmazonWrapper(track.getTitle(), track.getArtists(), track.getAlbum().getTitle());
+				aw.findReview();
 				
 				mbw.setAlbumInformations(track);
 				track.setLyrics(mmw.getLyricsbyScraping(track.getArtists(),track.getTitle()));
