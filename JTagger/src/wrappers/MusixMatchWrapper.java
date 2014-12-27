@@ -22,6 +22,7 @@ import java.io.*;
 import java.net.*;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -29,6 +30,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -264,7 +266,32 @@ import org.xml.sax.SAXException;
 	 *  Con questo link è possibile recuperare la canzone inserita in q_track, il risultato restituito ha bisogno di essere analizzato,
 	 *  e per ogni tag <tack> devo restituire i nomi dei cantanti trovati
 	 */
-	
+
+	public	String getComposer(String q_artist, String q_track)
+	{
+		
+		
+		String writer = new String("");
+		String path ="#content > div.track-view-container > div > div.track-sidebar";
+		try {
+			jsoup_doc = Jsoup.connect( URL_LYRICS + q_artist + "/" + q_track).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+			
+		Elements testo = jsoup_doc.select(path);	
+		Element writers = testo.first();
+		writers = writers.child(0).child(1).getElementsByClass("authors").first().child(0);
+		
+		for( Element e : writers.children())
+			writer = writer.concat(e.text()).concat(", ");
+		
+		writer = writer.substring(0, writer.length() -2) ;
+		
+		return writer;
+		
+	}
 	
 
 	public static void main(String []args) throws IOException, XPathExpressionException, ParserConfigurationException, SAXException

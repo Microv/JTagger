@@ -188,13 +188,13 @@ public class ResultDialog extends Dialog {
 		genre_text = new Text(grpOtherInfo, SWT.BORDER);
 		genre_text.setBounds(94, 115, 149, 19);
 		
-		publisher_text = new Text(grpOtherInfo, SWT.BORDER);
+		publisher_text = new Text(grpOtherInfo, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL);
 		publisher_text.setBounds(94, 152, 149, 19);
 		publisher_text.setText(track.getAlbum().getPublisher());
 		
 		Label lblTrackN = new Label(grpOtherInfo, SWT.NONE);
 		lblTrackN.setBounds(10, 182, 60, 14);
-		lblTrackN.setText("Track n°");
+		lblTrackN.setText("Track nï¿½");
 		
 		trackn2_text = new Text(grpOtherInfo, SWT.BORDER);
 		trackn2_text.setBounds(192, 177, 51, 19);
@@ -206,7 +206,7 @@ public class ResultDialog extends Dialog {
 		
 		Label lblDiscN = new Label(grpOtherInfo, SWT.NONE);
 		lblDiscN.setBounds(10, 207, 60, 14);
-		lblDiscN.setText("Disc n°");
+		lblDiscN.setText("Disc nï¿½");
 		
 		discn2_text = new Text(grpOtherInfo, SWT.BORDER);
 		discn2_text.setBounds(192, 202, 51, 19);
@@ -235,7 +235,7 @@ public class ResultDialog extends Dialog {
 		
 		Label lblNAscoltatori = new Label(grpAmazon, SWT.NONE);
 		lblNAscoltatori.setBounds(10, 269, 78, 14);
-		lblNAscoltatori.setText("N° ascoltatori");
+		lblNAscoltatori.setText("Nï¿½ ascoltatori");
 		
 		ascoltatori_text = new Text(grpAmazon, SWT.BORDER);
 		ascoltatori_text.setBounds(109, 264, 105, 19);
@@ -358,10 +358,8 @@ public class ResultDialog extends Dialog {
 				track.setLyrics(mmw.getLyricsbyScraping(track.getArtists(),track.getTitle()));
 //				album.setPublisher(mmw.getMatchingTrack(track.getTitle(), track.getArtists()).get("album_copyright"));
 				track.getAlbum().setPublisher(mmw.getMatchingTrack(track.getTitle(), track.getArtists()).get("album_copyright"));
+				track.setComposer(mmw.getComposer(track.getArtists(), track.getTitle()));
 				
-				// da sostituire	
-				String composer = amw.getComposer(track.getTitle(), track.getArtists());
-				track.setComposer(composer);
 				break;
 			} catch (ParserConfigurationException e1) {
 				// TODO Auto-generated catch block
