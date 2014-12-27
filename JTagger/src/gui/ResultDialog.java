@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 
+import metadata.Album;
 import metadata.Track;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -38,6 +39,8 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.xml.sax.SAXException;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+
+import de.umass.lastfm.ImageSize;
 
 public class ResultDialog extends Dialog {
 
@@ -226,6 +229,7 @@ public class ResultDialog extends Dialog {
 		
 		ascoltatori_text = new Text(grpAmazon, SWT.BORDER);
 		ascoltatori_text.setBounds(109, 264, 105, 19);
+		ascoltatori_text.setText(track.getListeners() + "");
 		
 		Group grpCover = new Group(shlRiepilogo, SWT.NONE);
 		grpCover.setText("Cover");
@@ -327,13 +331,22 @@ public class ResultDialog extends Dialog {
 			try {
 				mbw = new MusicBrainzWrapper();
 				amw = new AllMusicWrapper();
-				lfmw = new LastFmWrapper();
 				mmw = new MusixMatchWrapper();
+				
+				// last.fm wrapper
+				lfmw = new LastFmWrapper(track.getTitle(), track.getArtists(), track.getAlbum().getTitle());
+				track.setListeners(lfmw.getListeners());
+//				String url = lfmw.getAlbumCover(ImageSize.MEDIUM);
+//				Album album = new Album();
+//				album.setCover(url);
+				
+				// amazon wrapper
 				aw = new AmazonWrapper(track.getTitle(), track.getArtists(), track.getAlbum().getTitle());
 				aw.findReview();
 				
 				mbw.setAlbumInformations(track);
 				track.setLyrics(mmw.getLyricsbyScraping(track.getArtists(),track.getTitle()));
+//				album.setPublisher(mmw.getMatchingTrack(track.getTitle(), track.getArtists()).get("album_copyright"));
 				track.getAlbum().setPublisher(mmw.getMatchingTrack(track.getTitle(), track.getArtists()).get("album_copyright"));
 				
 				// da sostituire	

@@ -88,4 +88,14 @@ public class Track {
 	public void setPath(String path) {
 		this.path = path;
 	}
+	
+	private int listeners;
+	
+	public int getListeners() {
+		return listeners;
+	}
+
+	public void setListeners(int listeners) {
+		this.listeners = listeners;
+	}
 }

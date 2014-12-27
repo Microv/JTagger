@@ -8,9 +8,27 @@ import de.umass.lastfm.ImageSize;
 import de.umass.lastfm.Track;
 
 public class LastFmWrapper {
+	private static final String API_KEY = "84b2abff619c0e3bd04cceb4682e2348";
+	private String song, artist, album;
+	
+	public LastFmWrapper(String song, String artist, String album) {
+		this.song = song;
+		this.artist = artist;
+		this.album = album;
+	}
+	
+	public int getListeners() {
+		Track trackInfo = Track.getInfo(artist, song, API_KEY);
+		return trackInfo.getListeners();
+	}
+	
+	public String getAlbumCover(ImageSize is) {
+		Album albumInfo = Album.getInfo(artist, album, API_KEY);
+		return albumInfo.getImageURL(is);
+	}
 
 	public static void main(String[] args) {
-		Caller.getInstance().setUserAgent("tst");
+		Caller.getInstance().setUserAgent("Mozilla");
 		Caller.getInstance().setProxy(Proxy.NO_PROXY);
 		
 		String apiKey = "84b2abff619c0e3bd04cceb4682e2348";

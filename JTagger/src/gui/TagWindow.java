@@ -218,7 +218,7 @@ public class TagWindow {
 		textPublisher.setBounds(96, 168, 188, 22);
 		
 		Label label_8 = new Label(group_1, SWT.NONE);
-		label_8.setText("Track nÂ°");
+		label_8.setText("Track n°");
 		label_8.setBounds(10, 204, 62, 14);
 		
 		textTrackNo2 = new Text(group_1, SWT.BORDER);
@@ -248,7 +248,7 @@ public class TagWindow {
 		
 		Label lblDiscN = new Label(group_1, SWT.NONE);
 		lblDiscN.setBounds(10, 232, 62, 14);
-		lblDiscN.setText("Disc nÂ°");
+		lblDiscN.setText("Disc n°");
 		
 		textDiscNo1 = new Text(group_1, SWT.BORDER);
 		textDiscNo1.setBounds(196, 224, 36, 22);
