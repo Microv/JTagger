@@ -5,12 +5,16 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageInputStream;
 
+import javazoom.jl.decoder.JavaLayerException;
+import javazoom.jl.player.Player;
 import metadata.Track;
 
 import org.eclipse.swt.widgets.DirectoryDialog;
@@ -39,7 +43,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
-import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -62,6 +65,8 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+
+import utility.PlayerThread;
 
 public class TagWindow {
 	
@@ -91,7 +96,8 @@ public class TagWindow {
 	private Text textDiscNo1;
 	private Text textDiscNo2;
 	private Table table;
-	
+	private Player player;
+	private Button playerButton;
 	
 	private HashMap<String, Track> fileExplorer;
 	private Text textAlbumArtist;
@@ -142,6 +148,7 @@ public class TagWindow {
 		Group group = new Group(shell, SWT.NONE);
 		group.setText("Recording");
 		FormData fd_group = new FormData();
+		fd_group.top = new FormAttachment(0, 43);
 		fd_group.left = new FormAttachment(0, 288);
 		group.setLayoutData(fd_group);
 		
@@ -228,10 +235,9 @@ public class TagWindow {
 		
 		
 		Group grpCoverArt = new Group(shell, SWT.NONE);
-		fd_group.top = new FormAttachment(grpCoverArt, 0, SWT.TOP);
 		grpCoverArt.setText("Cover Art");
 		FormData fd_grpCoverArt = new FormData();
-		fd_grpCoverArt.top = new FormAttachment(0, 43);
+		fd_grpCoverArt.top = new FormAttachment(group, 0, SWT.TOP);
 		fd_grpCoverArt.right = new FormAttachment(100, -10);
 		grpCoverArt.setLayoutData(fd_grpCoverArt);
 		
@@ -239,11 +245,6 @@ public class TagWindow {
 		browseImageButton.addListener(SWT.Selection, new OpenIMGListener());
 		browseImageButton.setText("Add cover");
 		browseImageButton.setBounds(137, 255, 75, 22);
-		
-		Button btnNext = new Button(shell, SWT.NONE);
-		FormData fd_btnNext = new FormData();
-		fd_btnNext.bottom = new FormAttachment(100, -26);
-		fd_btnNext.right = new FormAttachment(100, -10);
 		
 		Label lblDiscN = new Label(group_1, SWT.NONE);
 		lblDiscN.setBounds(10, 232, 62, 14);
@@ -259,19 +260,6 @@ public class TagWindow {
 		label_10.setText("/");
 		label_10.setFont(SWTResourceManager.getFont("Sans", 11, SWT.NORMAL));
 		label_10.setBounds(238, 224, 4, 22);
-		btnNext.setLayoutData(fd_btnNext);
-		btnNext.setBounds(735, 426, 75, 18);
-		btnNext.setText("Next ->");
-		
-		Button btnCancel = new Button(shell, SWT.NONE);
-		fd_btnNext.left = new FormAttachment(btnCancel, 6);
-		FormData fd_btnCancel = new FormData();
-		fd_btnCancel.right = new FormAttachment(100, -92);
-		fd_btnCancel.top = new FormAttachment(btnNext, 0, SWT.TOP);
-		fd_btnCancel.bottom = new FormAttachment(100, -26);
-		btnCancel.setLayoutData(fd_btnCancel);
-		btnCancel.setBounds(654, 426, 75, 18);
-		btnCancel.setText("Cancel");
 		
 		Menu menu = new Menu(shell, SWT.BAR);
 		shell.setMenuBar(menu);
@@ -305,7 +293,6 @@ public class TagWindow {
 		TabFolder tabFolder = new TabFolder(shell, SWT.NONE);
 		fd_group_1.right = new FormAttachment(tabFolder, -6);
 		fd_group.right = new FormAttachment(tabFolder, -6);
-		fd_btnCancel.left = new FormAttachment(tabFolder, 70);
 		fd_grpCoverArt.left = new FormAttachment(tabFolder, 6);
 		
 		lblCoverArt = new Label(grpCoverArt, SWT.NONE);
@@ -419,7 +406,7 @@ public class TagWindow {
 		toolItem_save.setImage(SWTResourceManager.getImage(TagWindow.class, "/gui/img/save.png"));
 		
 		Group grpInfo = new Group(shell, SWT.NONE);
-		fd_grpCoverArt.bottom = new FormAttachment(grpInfo, -6);
+		fd_grpCoverArt.bottom = new FormAttachment(grpInfo, -17);
 		
 		lblCoverProp = new Label(grpCoverArt, SWT.NONE);
 		lblCoverProp.setText("Dimensions");
@@ -427,11 +414,10 @@ public class TagWindow {
 		
 		Label label_12 = new Label(grpCoverArt, SWT.SEPARATOR | SWT.HORIZONTAL);
 		label_12.setBounds(0, 220, 212, 2);
-		fd_btnNext.top = new FormAttachment(grpInfo, 6);
 		grpInfo.setText("Info");
 		FormData fd_grpInfo = new FormData();
-		fd_grpInfo.top = new FormAttachment(0, 345);
-		fd_grpInfo.bottom = new FormAttachment(100, -62);
+		fd_grpInfo.bottom = new FormAttachment(100, -58);
+		fd_grpInfo.top = new FormAttachment(0, 349);
 		fd_grpInfo.right = new FormAttachment(100, -10);
 		fd_grpInfo.left = new FormAttachment(tabFolder, 6);
 		grpInfo.setLayoutData(fd_grpInfo);
@@ -459,6 +445,57 @@ public class TagWindow {
 		lblChannels = new Label(grpInfo, SWT.NONE);
 		lblChannels.setBounds(10, 142, 58, 13);
 		lblChannels.setText("Channels");
+		
+		playerButton = new Button(shell, SWT.NONE);
+		playerButton.setImage(SWTResourceManager
+				.getImage(TagWindow.class, "/gui/img/media-playback-start-8.png"));
+		
+		FormData fd_button = new FormData();
+		fd_button.bottom = new FormAttachment(grpCoverArt, -6);
+		fd_button.top = new FormAttachment(0);
+		fd_button.right = new FormAttachment(100, -10);
+		playerButton.setLayoutData(fd_button);
+		
+		
+		playerButton.addListener(SWT.Selection, new Listener() {
+			
+			@Override
+			public void handleEvent(Event arg0) {
+				
+				if(player == null) {
+					TableItem[] ti = table.getSelection();
+					if(ti.length == 0) {
+						MessageBox msgBox = new MessageBox(shell);
+						msgBox.setMessage("Please select an Mp3 file");
+						msgBox.open();
+					}
+					else {
+						playerButton.setImage(SWTResourceManager
+								.getImage(TagWindow.class, "/gui/img/media-playback-stop-8.png"));
+						File f = new File(ti[0].getText(1)+"/"+ti[0].getText(0));	
+						try {
+							FileInputStream fis = new FileInputStream(f);
+							player = new Player(fis);
+						} catch (JavaLayerException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (FileNotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						new PlayerThread(player).start();
+					}
+						
+				}
+				else {
+					playerButton.setImage(SWTResourceManager
+							.getImage(TagWindow.class, "/gui/img/media-playback-start-8.png"));
+					player.close();
+					player = null;
+				}
+				
+			}
+		});
 		
 		table.addMouseListener(new MouseListener() {
 			
@@ -698,5 +735,4 @@ public class TagWindow {
 	          
 	     }
      }
-	
 }
