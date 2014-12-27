@@ -237,7 +237,7 @@ public class TagWindow {
 		Group grpCoverArt = new Group(shell, SWT.NONE);
 		grpCoverArt.setText("Cover Art");
 		FormData fd_grpCoverArt = new FormData();
-		fd_grpCoverArt.top = new FormAttachment(group, 0, SWT.TOP);
+		fd_grpCoverArt.top = new FormAttachment(0, 43);
 		fd_grpCoverArt.right = new FormAttachment(100, -10);
 		grpCoverArt.setLayoutData(fd_grpCoverArt);
 		
@@ -406,7 +406,7 @@ public class TagWindow {
 		toolItem_save.setImage(SWTResourceManager.getImage(TagWindow.class, "/gui/img/save.png"));
 		
 		Group grpInfo = new Group(shell, SWT.NONE);
-		fd_grpCoverArt.bottom = new FormAttachment(grpInfo, -17);
+		fd_grpCoverArt.bottom = new FormAttachment(100, -269);
 		
 		lblCoverProp = new Label(grpCoverArt, SWT.NONE);
 		lblCoverProp.setText("Dimensions");
@@ -416,10 +416,10 @@ public class TagWindow {
 		label_12.setBounds(0, 220, 212, 2);
 		grpInfo.setText("Info");
 		FormData fd_grpInfo = new FormData();
-		fd_grpInfo.bottom = new FormAttachment(100, -58);
-		fd_grpInfo.top = new FormAttachment(0, 349);
-		fd_grpInfo.right = new FormAttachment(100, -10);
+		fd_grpInfo.top = new FormAttachment(grpCoverArt, 6);
 		fd_grpInfo.left = new FormAttachment(tabFolder, 6);
+		fd_grpInfo.right = new FormAttachment(grpCoverArt, 0, SWT.RIGHT);
+		fd_grpInfo.bottom = new FormAttachment(100, -69);
 		grpInfo.setLayoutData(fd_grpInfo);
 		
 		lblBitRate = new Label(grpInfo, SWT.NONE);
@@ -447,14 +447,13 @@ public class TagWindow {
 		lblChannels.setText("Channels");
 		
 		playerButton = new Button(shell, SWT.NONE);
+		FormData fd_playerButton = new FormData();
+		fd_playerButton.top = new FormAttachment(grpInfo, 6);
+		fd_playerButton.right = new FormAttachment(grpCoverArt, 155);
+		fd_playerButton.left = new FormAttachment(tabFolder, 60);
+		playerButton.setLayoutData(fd_playerButton);
 		playerButton.setImage(SWTResourceManager
 				.getImage(TagWindow.class, "/gui/img/media-playback-start-8.png"));
-		
-		FormData fd_button = new FormData();
-		fd_button.bottom = new FormAttachment(grpCoverArt, -6);
-		fd_button.top = new FormAttachment(0);
-		fd_button.right = new FormAttachment(100, -10);
-		playerButton.setLayoutData(fd_button);
 		
 		
 		playerButton.addListener(SWT.Selection, new Listener() {
