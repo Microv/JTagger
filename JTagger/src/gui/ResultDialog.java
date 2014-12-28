@@ -224,10 +224,11 @@ public class ResultDialog extends Dialog {
 		browser.setBounds(10, 20, 291, 243);
 		
 		//	Get real URL without specifying the absolute path (computer file system path)
-		String url;
 		try {
-			url = new File("html/amazon.html").getCanonicalPath();
+			File amazon = new File("html/amazon.html");
+			String url = amazon.getCanonicalPath();
 			browser.setUrl(url);
+			amazon.deleteOnExit();
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
