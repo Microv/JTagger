@@ -46,7 +46,6 @@ public class AmazonWrapper {
 		}
 
 		Elements results = dirtyDocument.select("tr[name]");
-		if(results.size() == 0) return;
 		String[] trNames = new String[results.size()];
 		for (int i = 0; i < trNames.length; i++)
 			trNames[i] = results.get(i).attr("name");
