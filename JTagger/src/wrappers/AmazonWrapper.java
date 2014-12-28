@@ -33,7 +33,7 @@ public class AmazonWrapper {
 		String track = replaceString(song);
 		String art = replaceString(artist);
 		String alb = replaceString(album);
-		String query = LINK + art + "+" + track + "+" + alb;
+		String query = LINK + track + "+" + art + "+" + alb;
 
 		Document dirtyDocument = null, cleanDocument = null;
 		try {
