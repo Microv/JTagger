@@ -225,7 +225,7 @@ public class ResultDialog extends Dialog {
 		
 		//	Get real URL without specifying the absolute path (computer file system path)
 		try {
-			File amazon = new File("html/amazon.html");
+			File amazon = new File("amazon.html");
 			String url = amazon.getCanonicalPath();
 			browser.setUrl(url);
 			amazon.deleteOnExit();
@@ -353,7 +353,7 @@ public class ResultDialog extends Dialog {
 				
 				// amazon wrapper
 				aw = new AmazonWrapper(track.getTitle(), track.getArtists(), track.getAlbum().getTitle());
-				aw.findReview();
+				System.out.println("Review" + (aw.findReview() ? " " : " not ") + "found.");
 				
 				mbw.setAlbumInformations(track);
 				track.setLyrics(mmw.getLyricsbyScraping(track.getArtists(),track.getTitle()));

@@ -18,3 +18,9 @@ $.fn.stars = function() {
 		$(this).html($span);
 	});
 }
+
+$('.stars').hover(function() {
+	$(this).attr('title').show();
+}, function() {
+	$(this).attr('title').hide();
+});

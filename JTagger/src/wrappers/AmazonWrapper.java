@@ -27,7 +27,7 @@ public class AmazonWrapper {
 		this.album = album;
 	}
 
-	public void findReview() {
+	public boolean findReview() {
 		String reviewInfo = "";
 
 		String track = replaceString(song);
@@ -37,8 +37,7 @@ public class AmazonWrapper {
 
 		Document dirtyDocument = null, cleanDocument = null;
 		try {
-			dirtyDocument = Jsoup.connect(query).timeout(0)
-					.userAgent("Mozilla").get();
+			dirtyDocument = Jsoup.connect(query).timeout(0).userAgent("Mozilla").get();
 		} catch (IOException e) {
 			logger.severe("Problem to linking to " + query);
 			e.printStackTrace();
@@ -46,6 +45,12 @@ public class AmazonWrapper {
 		}
 
 		Elements results = dirtyDocument.select("tr[name]");
+		if (results.size() < 1) {
+			reviewInfo = NO_REVIEWS;
+			createAmazonPage(reviewInfo);
+			return false;
+		}
+		
 		String[] trNames = new String[results.size()];
 		for (int i = 0; i < trNames.length; i++)
 			trNames[i] = results.get(i).attr("name");
@@ -74,8 +79,7 @@ public class AmazonWrapper {
 				+ "] > td.songTitle > a");
 		query = songLink.attr("href");
 		try {
-			dirtyDocument = Jsoup.connect(query).timeout(0)
-					.userAgent("Mozilla").get();
+			dirtyDocument = Jsoup.connect(query).timeout(0).userAgent("Mozilla").get();
 			cleanDocument = new Cleaner(Whitelist.basic()).clean(dirtyDocument);
 		} catch (IOException e) {
 			logger.severe("Problem to linking to " + query);
@@ -92,48 +96,47 @@ public class AmazonWrapper {
 			}
 		}
 
-		if (sibling.tagName().equalsIgnoreCase("a"))
+		if (sibling.tagName().equalsIgnoreCase("a")) {
 			reviewInfo = NO_REVIEWS;
-		else {
-			Element link = sibling.select(sibling.tagName() + " > a[href]")
-					.first();
-			query = link.attr("href");
+			createAmazonPage(reviewInfo);
+			return false;
+		}
+		
+		Element link = sibling.select(sibling.tagName() + " > a[href]").first();
+		query = link.attr("href");
 
-			try {
-				dirtyDocument = Jsoup.connect(query).timeout(0)
-						.userAgent("Mozilla").get();
-				dirtyDocument.outputSettings().charset("UTF-8");
-				cleanDocument = dirtyDocument;
-			} catch (IOException e) {
-				logger.severe("Problem to linking at " + query);
-				e.printStackTrace();
-				System.exit(1);
-			}
-
-			Element span = cleanDocument.getElementsByClass(
-					"asinReviewsSummary").first();
-			String avgCustomReview = span.text().split(" ")[0];
-			Element div = cleanDocument.getElementsByClass("reviewText")
-					.first();
-			String reviewText = div.text();
-			cleanDocument = new Cleaner(Whitelist.basic()).clean(dirtyDocument);
-			cleanDocument.outputSettings().charset("UTF-8");
-			bolds = cleanDocument.getElementsByTag("span").select("span > b");
-			Element reviewer = bolds.parents().first().nextElementSibling();
-			String reviewerName = reviewer.text(), titleReview = bolds.first()
-					.text();
-
-			reviewInfo = avgCustomReview + "\n" + reviewerName + "\n"
-					+ titleReview + "\n" + reviewText;
+		try {
+			dirtyDocument = Jsoup.connect(query).timeout(0)
+					.userAgent("Mozilla").get();
+			dirtyDocument.outputSettings().charset("UTF-8");
+			cleanDocument = dirtyDocument;
+		} catch (IOException e) {
+			logger.severe("Problem to linking at " + query);
+			e.printStackTrace();
+			System.exit(1);
 		}
 
+		Element span = cleanDocument.getElementsByClass("asinReviewsSummary").first();
+		String avgCustomReview = span.text().split(" ")[0];
+		Element div = cleanDocument.getElementsByClass("reviewText").first();
+		String reviewText = div.text();
+		cleanDocument = new Cleaner(Whitelist.basic()).clean(dirtyDocument);
+		cleanDocument.outputSettings().charset("UTF-8");
+		bolds = cleanDocument.getElementsByTag("span").select("span > b");
+		Element reviewer = bolds.parents().first().nextElementSibling();
+		String reviewerName = reviewer.text(), titleReview = bolds.first().text();
+
+		reviewInfo = avgCustomReview + "\n" + reviewerName + "\n"
+				+ titleReview + "\n" + reviewText;
+
 		createAmazonPage(reviewInfo);
+		return true;
 	}
 
 	private void createAmazonPage(String reviewInfo) {
 		String[] info = reviewInfo.split("\n");
 		
-		DocumentType dt = new DocumentType("html", "", "", "html/amazon.html");
+		DocumentType dt = new DocumentType("html", "", "", "amazon.html");
 		Document html = Document.createShell(dt.baseUri());
 		html.prependChild(dt);
 
@@ -145,14 +148,12 @@ public class AmazonWrapper {
 		Element linkEl = html.head().appendElement("link");
 		linkEl.attr("rel", "stylesheet");
 		linkEl.attr("type", "text/css");
-		linkEl.attr("href", "../css/style.css");
+		linkEl.attr("href", "css/style.css");
 
-		Element scriptEl1 = html.head().appendElement("script")
-				.attr("type", "text/javascript");
-		Element scriptEl2 = html.head().appendElement("script")
-				.attr("type", "text/javascript");
-		scriptEl1.attr("src", "../js/jquery-2.1.3.min.js");
-		scriptEl2.attr("src", "../js/starRating.js");
+		Element scriptEl1 = html.head().appendElement("script").attr("type", "text/javascript");
+		Element scriptEl2 = html.head().appendElement("script").attr("type", "text/javascript");
+		scriptEl1.attr("src", "js/jquery-2.1.3.min.js");
+		scriptEl2.attr("src", "js/starRating.js");
 
 		// Add elements into body element
 		Element avgEl = html.body().appendElement("b");
@@ -160,10 +161,12 @@ public class AmazonWrapper {
 		Element spanEl = html.body().appendElement("span").addClass("stars");
 		if (info.length < 2) {
 			spanEl.text("0.0");
+			spanEl.attr("title", "0.0 out of 5 stars");
 			Element h4El = html.body().appendElement("h4");
 			h4El.text(info[0]);
 		} else {
 			spanEl.text(info[0]);
+			spanEl.attr("title", info[0] + " out of 5 stars");
 			Element h2 = html.body().appendElement("h2");
 			h2.text("Custom review");
 			Element divEl = html.body().appendElement("div");
@@ -180,8 +183,7 @@ public class AmazonWrapper {
 		FileOutputStream fos;
 		try {
 			fos = new FileOutputStream(html.baseUri());
-			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos,
-					"UTF-8"));
+			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
 			bw.write(html.toString());
 			bw.close();
 		} catch (IOException e) {
