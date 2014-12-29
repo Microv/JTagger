@@ -4,6 +4,7 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.Proxy;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -41,6 +42,7 @@ import org.xml.sax.SAXException;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
+import de.umass.lastfm.Caller;
 import de.umass.lastfm.ImageSize;
 
 public class ResultDialog extends Dialog {
@@ -194,7 +196,7 @@ public class ResultDialog extends Dialog {
 		
 		Label lblTrackN = new Label(grpOtherInfo, SWT.NONE);
 		lblTrackN.setBounds(10, 182, 60, 14);
-		lblTrackN.setText("Track nï¿½");
+		lblTrackN.setText("Track n°");
 		
 		trackn2_text = new Text(grpOtherInfo, SWT.BORDER);
 		trackn2_text.setBounds(192, 177, 51, 19);
@@ -206,7 +208,7 @@ public class ResultDialog extends Dialog {
 		
 		Label lblDiscN = new Label(grpOtherInfo, SWT.NONE);
 		lblDiscN.setBounds(10, 207, 60, 14);
-		lblDiscN.setText("Disc nï¿½");
+		lblDiscN.setText("Disc n°");
 		
 		discn2_text = new Text(grpOtherInfo, SWT.BORDER);
 		discn2_text.setBounds(192, 202, 51, 19);
@@ -236,7 +238,7 @@ public class ResultDialog extends Dialog {
 		
 		Label lblNAscoltatori = new Label(grpAmazon, SWT.NONE);
 		lblNAscoltatori.setBounds(10, 269, 78, 14);
-		lblNAscoltatori.setText("Nï¿½ ascoltatori");
+		lblNAscoltatori.setText("N° listeners");
 		
 		ascoltatori_text = new Text(grpAmazon, SWT.BORDER);
 		ascoltatori_text.setBounds(109, 264, 105, 19);
@@ -345,7 +347,10 @@ public class ResultDialog extends Dialog {
 				mmw = new MusixMatchWrapper();
 				
 				// last.fm wrapper
+				Caller.getInstance().setUserAgent("Mozilla");
+				Caller.getInstance().setProxy(Proxy.NO_PROXY);
 				lfmw = new LastFmWrapper(track.getTitle(), track.getArtists(), track.getAlbum().getTitle());
+				String url = lfmw.getAlbumCoverURL(ImageSize.MEDIUM);
 				track.setListeners(lfmw.getListeners());
 //				String url = lfmw.getAlbumCover(ImageSize.MEDIUM);
 //				Album album = new Album();

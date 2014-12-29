@@ -24,7 +24,7 @@ public class AmazonWrapper {
 	public AmazonWrapper(String song, String artist, String album) {
 		this.song = song;
 		this.artist = artist;
-		this.album = album;
+		this.album = album.toLowerCase();
 	}
 
 	public boolean findReview() {
@@ -58,21 +58,18 @@ public class AmazonWrapper {
 		Elements albumsLinks = results.select("tr > td.mp3tAlbum > a");
 		int albumPosition = 0;
 		for (Element element : albumsLinks) {
-			String text = element.text();
-			if (text.length() < this.album.length()) {
-				albumPosition++;
-				continue;
-			}
+			String text = element.text().toLowerCase();
 
-			String prefix = text.substring(0, this.album.length());
-			String suffix = text.substring(text.length() - this.album.length());
-
-			if (prefix.equalsIgnoreCase(this.album)
-					|| suffix.equalsIgnoreCase(this.album))
+			if (text.contains(album) || album.contains(text))
 				break;
 
-			else
-				albumPosition++;
+			albumPosition++;
+		}
+		
+		if (albumPosition == albumsLinks.size()) {
+			reviewInfo = NO_REVIEWS;
+			createAmazonPage(reviewInfo);
+			return false;
 		}
 
 		Elements songLink = results.select("tr[name*=" + trNames[albumPosition]
