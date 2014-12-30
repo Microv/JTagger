@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.Desktop;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -9,7 +10,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.Proxy;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
+import javax.imageio.ImageIO;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 
@@ -24,6 +27,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
+import utility.ImageUtil;
 import wrappers.AllMusicWrapper;
 import wrappers.AmazonWrapper;
 import wrappers.LastFmWrapper;
@@ -43,6 +47,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
 import org.xml.sax.SAXException;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
@@ -52,6 +57,10 @@ import de.umass.lastfm.ImageSize;
 
 public class ResultDialog extends Dialog {
 
+	protected static final String SMALL = "Small";
+	protected static final String MEDIUM = "Medium";
+	private static final String LARGE = "Large";
+	
 	protected Object result;
 	protected Shell shlRiepilogo;
 	private Text textLyrics;
@@ -68,8 +77,16 @@ public class ResultDialog extends Dialog {
 	private Text trackn1_text;
 	private Text discn2_text;
 	private Text discn1_text;
+	private Label lblCoverArt;
 	
 	private Display display;
+	
+	private MusicBrainzWrapper mbw;
+	private AllMusicWrapper amw;
+	private LastFmWrapper lfmw;
+	private MusixMatchWrapper mmw;
+	private AmazonWrapper aw;
+	
 	
 	/*
 	 * Variabili Temporanee 
@@ -255,8 +272,8 @@ public class ResultDialog extends Dialog {
 		grpCover.setText("Cover");
 		grpCover.setBounds(615, 44, 180, 178);
 		
-		Label lblCover = new Label(grpCover, SWT.NONE);
-		lblCover.setBounds(10, 10, 160, 158);
+		lblCoverArt = new Label(grpCover, SWT.NONE);
+		lblCoverArt.setBounds(10, 13, 160, 158);
 		
 		Button btnNewButton = new Button(shlRiepilogo, SWT.NONE);
 		btnNewButton.addSelectionListener(new SelectionAdapter() {
@@ -277,7 +294,13 @@ public class ResultDialog extends Dialog {
 			public void widgetSelected(SelectionEvent e) {
 				Button button = (Button) e.widget;
 				System.out.print(button.getText());
-				System.out.println(" selected = " + button.getSelection());
+				if(button.getText().equals(SMALL))
+					track.getAlbum().setCover(lfmw.getAlbumCoverURL(ImageSize.MEDIUM));
+				if(button.getText().equals(MEDIUM))
+					track.getAlbum().setCover(lfmw.getAlbumCoverURL(ImageSize.LARGE));
+				if(button.getText().equals(LARGE))
+					track.getAlbum().setCover(lfmw.getAlbumCoverURL(ImageSize.EXTRALARGE));
+				updateImage();
 			}
 			
 			@Override
@@ -290,18 +313,18 @@ public class ResultDialog extends Dialog {
 		
 		Button btnSmall = new Button(shlRiepilogo, SWT.RADIO);
 		btnSmall.setBounds(801, 63, 97, 22);
-		btnSmall.setText("Small");
+		btnSmall.setText(SMALL);
 		btnSmall.addSelectionListener(selectionButtons);
 		
 		Button btnMedium = new Button(shlRiepilogo, SWT.RADIO);
 		btnMedium.setSelection(true);
 		btnMedium.setBounds(801, 91, 97, 22);
-		btnMedium.setText("Medium");
+		btnMedium.setText(MEDIUM);
 		btnMedium.addSelectionListener(selectionButtons);
 		
 		Button btnLarge = new Button(shlRiepilogo, SWT.RADIO);
 		btnLarge.setBounds(801, 119, 97, 22);
-		btnLarge.setText("Large");
+		btnLarge.setText(LARGE);
 		btnLarge.addSelectionListener(selectionButtons);
 		
 		ToolBar toolBar = new ToolBar(shlRiepilogo, SWT.FLAT | SWT.RIGHT);
@@ -341,7 +364,22 @@ public class ResultDialog extends Dialog {
 		lblPoweredBy.setFont(SWTResourceManager.getFont("Sans", 10, SWT.NORMAL));
 		lblPoweredBy.setBounds(616, 10, 78, 13);
 		lblPoweredBy.setText("Powered By");
+		
+		updateImage();
 
+	}
+
+	private void updateImage() {
+		try {
+			BufferedImage bi = ImageIO.read(new URL(track.getAlbum().getCover()));
+			ImageData imgdata = ImageUtil.makeSWTImage(display, bi).getImageData()
+					.scaledTo(lblCoverArt.getBounds().width, lblCoverArt.getBounds().height);
+			lblCoverArt.setImage(new Image(display, imgdata));
+			lblCoverArt.pack();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void setTrack(Track result2) {
@@ -357,11 +395,7 @@ public class ResultDialog extends Dialog {
 	}
 
 	private void getInfo() {
-		MusicBrainzWrapper mbw;
-		AllMusicWrapper amw;
-		LastFmWrapper lfmw;
-		MusixMatchWrapper mmw;
-		AmazonWrapper aw;
+		
 		/*
 		 *  Inserire all'interno del try le informazioni da assegnare
 		 *   a 'track' ( per visualizzarle nel dialog)
@@ -385,7 +419,7 @@ public class ResultDialog extends Dialog {
 				Caller.getInstance().setProxy(Proxy.NO_PROXY);
 				lfmw = new LastFmWrapper(track.getTitle(), artist, track.getAlbum().getTitle());
 				track.setListeners(lfmw.getListeners());
-				track.getAlbum().setCover(lfmw.getAlbumCoverURL(ImageSize.MEDIUM));
+				track.getAlbum().setCover(lfmw.getAlbumCoverURL(ImageSize.LARGE));
 				
 				// amazon wrapper
 				aw = new AmazonWrapper(track.getTitle(), artist, track.getAlbum().getTitle());
