@@ -235,17 +235,14 @@ import org.xml.sax.SAXException;
 	}
 	
 	// recuperare il teso della canzone tramitelo scraping | utilizzo della libreria jsoup/json
-	public String getLyricsbyScraping(String q_artist, String q_track)
+	public String getLyricsbyScraping(String q_artist, String q_track) throws IOException
 	{
 	
 	String lyrics = new String("");
 	String path = "#lyrics-html";
-	try {
-		jsoup_doc = Jsoup.connect( URL_LYRICS + q_artist + "/" + q_track).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
-	} catch (IOException e1) {
-		// TODO Auto-generated catch block
-		e1.printStackTrace();
-	}
+	
+	jsoup_doc = Jsoup.connect( URL_LYRICS + q_artist + "/" + q_track).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
+	
 	Elements testo = jsoup_doc.select(path);
 	int i= 1;
 	Element e = testo.first(); // Resituisce un unico elemento.
@@ -267,19 +264,16 @@ import org.xml.sax.SAXException;
 	 *  e per ogni tag <tack> devo restituire i nomi dei cantanti trovati
 	 */
 
-	public	String getComposer(String q_artist, String q_track)
+	public	String getComposer(String q_artist, String q_track) throws IOException
 	{
 		
 		
 		String writer = new String("");
 		//String path ="#content > div.track-view-container > div > div.track-sidebar";
 		String path = ".authors > ul:nth-child(1)";
-		try {
-			jsoup_doc = Jsoup.connect( URL_LYRICS + q_artist + "/" + q_track).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		
+		jsoup_doc = Jsoup.connect( URL_LYRICS + q_artist + "/" + q_track).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
+		
 			
 		Elements testo = jsoup_doc.select(path);	
 		/*if(testo == null)

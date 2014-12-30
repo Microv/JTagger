@@ -3,8 +3,6 @@ package gui;
 import java.awt.Desktop;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Proxy;
@@ -41,8 +39,6 @@ import org.eclipse.wb.swt.SWTResourceManager;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -82,6 +78,7 @@ public class ResultDialog extends Dialog {
 	private Display display;
 	
 	private MusicBrainzWrapper mbw;
+	@SuppressWarnings("unused")
 	private AllMusicWrapper amw;
 	private LastFmWrapper lfmw;
 	private MusixMatchWrapper mmw;
@@ -282,18 +279,24 @@ public class ResultDialog extends Dialog {
 			}
 		});
 		btnNewButton.setBounds(449, 503, 95, 28);
-		btnNewButton.setText("Salva");
+		btnNewButton.setText("Save");
 		
-		Button btnEsci = new Button(shlRiepilogo, SWT.NONE);
-		btnEsci.setText("Esci");
-		btnEsci.setBounds(336, 503, 95, 28);
+		Button btnCancel = new Button(shlRiepilogo, SWT.NONE);
+		btnCancel.setText("Cancel");
+		btnCancel.setBounds(336, 503, 95, 28);
+		btnCancel.addListener(SWT.Selection, new Listener() {
+			
+			@Override
+			public void handleEvent(Event arg0) {
+				shlRiepilogo.dispose();
+			}
+		});
 		
 		SelectionListener selectionButtons = new SelectionListener() {
 			
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Button button = (Button) e.widget;
-				System.out.print(button.getText());
 				if(button.getText().equals(SMALL))
 					track.getAlbum().setCover(lfmw.getAlbumCoverURL(ImageSize.MEDIUM));
 				if(button.getText().equals(MEDIUM))
