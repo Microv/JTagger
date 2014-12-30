@@ -272,7 +272,8 @@ import org.xml.sax.SAXException;
 		
 		
 		String writer = new String("");
-		String path ="#content > div.track-view-container > div > div.track-sidebar";
+		//String path ="#content > div.track-view-container > div > div.track-sidebar";
+		String path = ".authors > ul:nth-child(1)";
 		try {
 			jsoup_doc = Jsoup.connect( URL_LYRICS + q_artist + "/" + q_track).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
 		} catch (IOException e1) {
@@ -281,14 +282,22 @@ import org.xml.sax.SAXException;
 		}
 			
 		Elements testo = jsoup_doc.select(path);	
-		Element writers = testo.first();
+		/*if(testo == null)
+			return "";*/
+		
+		/*Element writers = testo.first();
 		writers = writers.child(0).child(1).getElementsByClass("authors").first().child(0);
 		
 		for( Element e : writers.children())
 			writer = writer.concat(e.text()).concat(", ");
-		
+			*/
+
+		Elements writers = testo.first().children();
+		for(Element e : writers)
+			writer += e.text()+", ";
+
 		writer = writer.substring(0, writer.length() -2) ;
-		
+        
 		return writer;
 		
 	}

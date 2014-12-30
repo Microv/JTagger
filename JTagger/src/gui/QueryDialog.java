@@ -174,11 +174,11 @@ public class QueryDialog extends Dialog {
 		button.setLayoutData(fd_button);
 		
 		progressBar = new ProgressBar(shell, SWT.NONE);
-		fd_grpResults.bottom = new FormAttachment(progressBar, -6);
+		fd_grpResults.bottom = new FormAttachment(100, -29);
 		FormData fd_progressBar = new FormData();
-		fd_progressBar.left = new FormAttachment(0, 20);
-		fd_progressBar.right = new FormAttachment(100, -10);
-		fd_progressBar.top = new FormAttachment(0, 324);
+		fd_progressBar.top = new FormAttachment(grpResults, 6);
+		fd_progressBar.left = new FormAttachment(0, 21);
+		fd_progressBar.right = new FormAttachment(100, -22);
 		fd_progressBar.bottom = new FormAttachment(100, -10);
 		progressBar.setLayoutData(fd_progressBar);
 		

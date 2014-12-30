@@ -217,9 +217,9 @@ public class TagWindow {
 		textPublisher = new Text(group_1, SWT.BORDER);
 		textPublisher.setBounds(96, 168, 188, 22);
 		
-		Label label_8 = new Label(group_1, SWT.NONE);
-		label_8.setText("Track n°");
-		label_8.setBounds(10, 204, 62, 14);
+		Label lblTrackNumber = new Label(group_1, SWT.NONE);
+		lblTrackNumber.setText("Track number");
+		lblTrackNumber.setBounds(10, 204, 83, 14);
 		
 		textTrackNo2 = new Text(group_1, SWT.BORDER);
 		textTrackNo2.setBounds(248, 196, 36, 22);
@@ -247,8 +247,8 @@ public class TagWindow {
 		browseImageButton.setBounds(137, 255, 75, 22);
 		
 		Label lblDiscN = new Label(group_1, SWT.NONE);
-		lblDiscN.setBounds(10, 232, 62, 14);
-		lblDiscN.setText("Disc n°");
+		lblDiscN.setBounds(10, 232, 83, 14);
+		lblDiscN.setText("Disc number");
 		
 		textDiscNo1 = new Text(group_1, SWT.BORDER);
 		textDiscNo1.setBounds(196, 224, 36, 22);
@@ -416,10 +416,10 @@ public class TagWindow {
 		label_12.setBounds(0, 220, 212, 2);
 		grpInfo.setText("Info");
 		FormData fd_grpInfo = new FormData();
+		fd_grpInfo.bottom = new FormAttachment(group_1, 0, SWT.BOTTOM);
 		fd_grpInfo.top = new FormAttachment(grpCoverArt, 6);
 		fd_grpInfo.left = new FormAttachment(tabFolder, 6);
 		fd_grpInfo.right = new FormAttachment(grpCoverArt, 0, SWT.RIGHT);
-		fd_grpInfo.bottom = new FormAttachment(100, -69);
 		grpInfo.setLayoutData(fd_grpInfo);
 		
 		lblBitRate = new Label(grpInfo, SWT.NONE);
@@ -446,12 +446,8 @@ public class TagWindow {
 		lblChannels.setBounds(10, 142, 58, 13);
 		lblChannels.setText("Channels");
 		
-		playerButton = new Button(shell, SWT.NONE);
-		FormData fd_playerButton = new FormData();
-		fd_playerButton.top = new FormAttachment(grpInfo, 6);
-		fd_playerButton.right = new FormAttachment(grpCoverArt, 155);
-		fd_playerButton.left = new FormAttachment(tabFolder, 60);
-		playerButton.setLayoutData(fd_playerButton);
+		playerButton = new Button(grpInfo, SWT.NONE);
+		playerButton.setBounds(57, 190, 107, 36);
 		playerButton.setImage(SWTResourceManager
 				.getImage(TagWindow.class, "/gui/img/media-playback-start-8.png"));
 		

@@ -138,12 +138,12 @@ public class FPDialog extends Dialog {
 		tblclmnYear.setText("Year");
 		
 		progressBar = new ProgressBar(shell, SWT.NONE);
-		fd_grpResults.bottom = new FormAttachment(progressBar, -6);
+		fd_grpResults.bottom = new FormAttachment(100, -26);
 		FormData fd_progressBar = new FormData();
-		fd_progressBar.top = new FormAttachment(0, 321);
+		fd_progressBar.top = new FormAttachment(grpResults, 6);
+		fd_progressBar.left = new FormAttachment(0, 15);
+		fd_progressBar.right = new FormAttachment(100, -15);
 		fd_progressBar.bottom = new FormAttachment(100, -8);
-		fd_progressBar.left = new FormAttachment(0, 20);
-		fd_progressBar.right = new FormAttachment(100, -10);
 		progressBar.setLayoutData(fd_progressBar);
 		
 		table.addMouseListener(new MouseListener() {

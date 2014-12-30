@@ -183,7 +183,7 @@ public class ResultDialog extends Dialog {
 		lblGenre.setText("Genre");
 		
 		Label lblPublisher = new Label(grpOtherInfo, SWT.NONE);
-		lblPublisher.setBounds(10, 157, 60, 14);
+		lblPublisher.setBounds(10, 145, 60, 14);
 		lblPublisher.setText("Publisher");
 		
 		composer_text = new Text(grpOtherInfo, SWT.BORDER | SWT.WRAP | SWT.MULTI);
@@ -197,40 +197,40 @@ public class ResultDialog extends Dialog {
 		genre_text = new Text(grpOtherInfo, SWT.BORDER);
 		genre_text.setBounds(94, 115, 149, 19);
 		
-		publisher_text = new Text(grpOtherInfo, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL);
-		publisher_text.setBounds(94, 152, 149, 19);
+		publisher_text = new Text(grpOtherInfo, SWT.BORDER | SWT.WRAP | SWT.MULTI);
+		publisher_text.setBounds(94, 145, 149, 36);
 		publisher_text.setText(track.getAlbum().getPublisher());
 		
 		Label lblTrackN = new Label(grpOtherInfo, SWT.NONE);
-		lblTrackN.setBounds(10, 182, 60, 14);
-		lblTrackN.setText("Track n°");
+		lblTrackN.setBounds(10, 194, 96, 14);
+		lblTrackN.setText("Track number");
 		
 		trackn2_text = new Text(grpOtherInfo, SWT.BORDER);
-		trackn2_text.setBounds(192, 177, 51, 19);
+		trackn2_text.setBounds(192, 189, 51, 19);
 		trackn2_text.setText(track.getAlbum().getTrackCount());
 		
 		trackn1_text = new Text(grpOtherInfo, SWT.BORDER);
-		trackn1_text.setBounds(123, 177, 51, 19);
+		trackn1_text.setBounds(123, 189, 51, 19);
 		trackn1_text.setText(track.getTrackNum());
 		
 		Label lblDiscN = new Label(grpOtherInfo, SWT.NONE);
-		lblDiscN.setBounds(10, 207, 60, 14);
-		lblDiscN.setText("Disc n°");
+		lblDiscN.setBounds(10, 219, 78, 14);
+		lblDiscN.setText("Disc number");
 		
 		discn2_text = new Text(grpOtherInfo, SWT.BORDER);
-		discn2_text.setBounds(192, 202, 51, 19);
+		discn2_text.setBounds(192, 214, 51, 19);
 		discn2_text.setText(track.getAlbum().getMediumCount());
 		
 		discn1_text = new Text(grpOtherInfo, SWT.BORDER);
-		discn1_text.setBounds(123, 202, 51, 19);
+		discn1_text.setBounds(123, 214, 51, 19);
 		discn1_text.setText(track.getDiscNum());
 		
 		Group grpAmazon = new Group(shlRiepilogo, SWT.NONE);
 		grpAmazon.setText("Amazon");
-		grpAmazon.setBounds(615, 238, 311, 293);
+		grpAmazon.setBounds(615, 228, 311, 291);
 		
 		Browser browser = new Browser(grpAmazon, SWT.NONE);
-		browser.setBounds(10, 20, 291, 243);
+		browser.setBounds(10, 14, 291, 243);
 		
 		//	Get real URL without specifying the absolute path (computer file system path)
 		try {
@@ -244,11 +244,11 @@ public class ResultDialog extends Dialog {
 		}
 		
 		Label lblNAscoltatori = new Label(grpAmazon, SWT.NONE);
-		lblNAscoltatori.setBounds(10, 269, 78, 14);
-		lblNAscoltatori.setText("N° listeners");
+		lblNAscoltatori.setBounds(10, 269, 126, 14);
+		lblNAscoltatori.setText("Number of listeners");
 		
 		ascoltatori_text = new Text(grpAmazon, SWT.BORDER);
-		ascoltatori_text.setBounds(109, 264, 105, 19);
+		ascoltatori_text.setBounds(142, 264, 75, 19);
 		ascoltatori_text.setText(track.getListeners() + "");
 		
 		Group grpCover = new Group(shlRiepilogo, SWT.NONE);
@@ -373,22 +373,29 @@ public class ResultDialog extends Dialog {
 				amw = new AllMusicWrapper();
 				mmw = new MusixMatchWrapper();
 				
+				String artist = "";
+				int ind = track.getArtists().indexOf(" feat. ");
+				if(ind > 0)
+					artist = track.getArtists().substring(0, ind);
+				else 
+					artist = track.getArtists();
+				
 				// last.fm wrapper
 				Caller.getInstance().setUserAgent("Mozilla");
 				Caller.getInstance().setProxy(Proxy.NO_PROXY);
-				lfmw = new LastFmWrapper(track.getTitle(), track.getArtists(), track.getAlbum().getTitle());
+				lfmw = new LastFmWrapper(track.getTitle(), artist, track.getAlbum().getTitle());
 				track.setListeners(lfmw.getListeners());
 				track.getAlbum().setCover(lfmw.getAlbumCoverURL(ImageSize.MEDIUM));
 				
 				// amazon wrapper
-				aw = new AmazonWrapper(track.getTitle(), track.getArtists(), track.getAlbum().getTitle());
+				aw = new AmazonWrapper(track.getTitle(), artist, track.getAlbum().getTitle());
 				System.out.println("Review" + (aw.findReview() ? " " : " not ") + "found.");
 				
 				mbw.setAlbumInformations(track);
-				track.setLyrics(mmw.getLyricsbyScraping(track.getArtists(),track.getTitle()));
+				track.setLyrics(mmw.getLyricsbyScraping(artist,track.getTitle()));
 //				album.setPublisher(mmw.getMatchingTrack(track.getTitle(), track.getArtists()).get("album_copyright"));
-				track.getAlbum().setPublisher(mmw.getMatchingTrack(track.getTitle(), track.getArtists()).get("album_copyright"));
-				track.setComposer(mmw.getComposer(track.getArtists(), track.getTitle()));
+				track.getAlbum().setPublisher(mmw.getMatchingTrack(track.getTitle(), artist).get("album_copyright"));
+				track.setComposer(mmw.getComposer(artist, track.getTitle()));
 				
 				break;
 			} catch (ParserConfigurationException e1) {
