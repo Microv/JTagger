@@ -2,6 +2,8 @@ package gui;
 
 import java.awt.Desktop;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Proxy;
@@ -11,7 +13,6 @@ import java.net.URISyntaxException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 
-import metadata.Album;
 import metadata.Track;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -36,8 +37,12 @@ import org.eclipse.wb.swt.SWTResourceManager;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Image;
 import org.xml.sax.SAXException;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
@@ -64,6 +69,8 @@ public class ResultDialog extends Dialog {
 	private Text discn2_text;
 	private Text discn1_text;
 	
+	private Display display;
+	
 	/*
 	 * Variabili Temporanee 
 	 */
@@ -87,7 +94,7 @@ public class ResultDialog extends Dialog {
 		createContents();
 		shlRiepilogo.open();
 		shlRiepilogo.layout();
-		Display display = getParent().getDisplay();
+		display = getParent().getDisplay();
 		
 		while (!shlRiepilogo.isDisposed()) {
 			if (!display.readAndDispatch()) {
@@ -264,18 +271,38 @@ public class ResultDialog extends Dialog {
 		btnEsci.setText("Esci");
 		btnEsci.setBounds(336, 503, 95, 28);
 		
+		SelectionListener selectionButtons = new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Button button = (Button) e.widget;
+				System.out.print(button.getText());
+				System.out.println(" selected = " + button.getSelection());
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				Button button = (Button) e.widget;
+				System.out.print(button.getText());
+				System.out.println(" selected = " + button.getSelection());
+			}
+		};
+		
 		Button btnSmall = new Button(shlRiepilogo, SWT.RADIO);
 		btnSmall.setBounds(801, 63, 97, 22);
 		btnSmall.setText("Small");
+		btnSmall.addSelectionListener(selectionButtons);
 		
 		Button btnMedium = new Button(shlRiepilogo, SWT.RADIO);
 		btnMedium.setSelection(true);
 		btnMedium.setBounds(801, 91, 97, 22);
 		btnMedium.setText("Medium");
+		btnMedium.addSelectionListener(selectionButtons);
 		
 		Button btnLarge = new Button(shlRiepilogo, SWT.RADIO);
 		btnLarge.setBounds(801, 119, 97, 22);
 		btnLarge.setText("Large");
+		btnLarge.addSelectionListener(selectionButtons);
 		
 		ToolBar toolBar = new ToolBar(shlRiepilogo, SWT.FLAT | SWT.RIGHT);
 		toolBar.setBounds(700, 0, 236, 38);
@@ -350,11 +377,8 @@ public class ResultDialog extends Dialog {
 				Caller.getInstance().setUserAgent("Mozilla");
 				Caller.getInstance().setProxy(Proxy.NO_PROXY);
 				lfmw = new LastFmWrapper(track.getTitle(), track.getArtists(), track.getAlbum().getTitle());
-				String url = lfmw.getAlbumCoverURL(ImageSize.MEDIUM);
 				track.setListeners(lfmw.getListeners());
-//				String url = lfmw.getAlbumCover(ImageSize.MEDIUM);
-//				Album album = new Album();
-//				album.setCover(url);
+				track.getAlbum().setCover(lfmw.getAlbumCoverURL(ImageSize.MEDIUM));
 				
 				// amazon wrapper
 				aw = new AmazonWrapper(track.getTitle(), track.getArtists(), track.getAlbum().getTitle());
