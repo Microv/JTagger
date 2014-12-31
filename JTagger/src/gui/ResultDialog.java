@@ -4,6 +4,7 @@ import java.awt.Desktop;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Proxy;
 import java.net.URI;
@@ -26,6 +27,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
 import utility.ImageUtil;
+import utility.SaveImageFromUrl;
 import wrappers.AllMusicWrapper;
 import wrappers.AmazonWrapper;
 import wrappers.LastFmWrapper;
@@ -53,11 +55,12 @@ import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.audio.exceptions.CannotWriteException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
-import org.jaudiotagger.tag.FieldDataInvalidException;
 import org.jaudiotagger.tag.KeyNotFoundException;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.TagException;
+import org.jaudiotagger.tag.images.Artwork;
+import org.jaudiotagger.tag.images.ArtworkFactory;
 
 import de.umass.lastfm.Caller;
 import de.umass.lastfm.ImageSize;
@@ -296,37 +299,41 @@ public class ResultDialog extends Dialog {
 				AudioFile f;
 				
 				try {
-					
+	
 				f = AudioFileIO.read(file);
 				tag = f.getTag();
-				
-				
 					
-				tag.setField(FieldKey.TITLE,track.getTitle());
-				tag.setField(FieldKey.ARTIST,track.getArtists());
-				tag.setField(FieldKey.COMPOSER, track.getComposer());
+				tag.setField(FieldKey.TITLE,title_text.getText());
+				tag.setField(FieldKey.ARTIST,artist_text.getText());
+				tag.setField(FieldKey.COMPOSER, composer_text.getText());
 				//	tag.setField(FieldKey.COMMENT , track.getComment()); Argument cannot be null
-				tag.setField(FieldKey.ALBUM, track.getAlbum().getTitle());
-				tag.setField(FieldKey.ALBUM_ARTIST, track.getAlbum().getAlbumArtist());
-				tag.setField(FieldKey.YEAR, track.getAlbum().getYear());
+				tag.setField(FieldKey.ALBUM, album_text.getText());
+				tag.setField(FieldKey.ALBUM_ARTIST, albumArtist_text.getText());
+				tag.setField(FieldKey.YEAR, year_text.getText());
 			//	tag.setField(FieldKey.GENRE, track.getAlbum().getGenre());
-				tag.setField(FieldKey.PRODUCER, track.getAlbum().getPublisher());
-				tag.setField(FieldKey.TRACK, track.getTrackNum());
-				tag.setField(FieldKey.TRACK_TOTAL, track.getAlbum().getTrackCount());
-				tag.setField(FieldKey.DISC_NO, track.getDiscNum());
-				tag.setField(FieldKey.DISC_TOTAL, track.getAlbum().getMediumCount());
-				tag.setField(FieldKey.LYRICS, track.getLyrics());
-			//	tag.setField(FieldKey.COVER_ART,track.getAlbum().getCover());
+				tag.setField(FieldKey.PRODUCER, publisher_text.getText());
+				tag.setField(FieldKey.TRACK, trackn1_text.getText());
+				tag.setField(FieldKey.TRACK_TOTAL, trackn2_text.getText());
+				tag.setField(FieldKey.DISC_NO, discn1_text.getText());
+				tag.setField(FieldKey.DISC_TOTAL, discn2_text.getText());
+				tag.setField(FieldKey.LYRICS, textLyrics.getText());
 				
+				SaveImageFromUrl.saveImage(track.getAlbum().getCover(), "tmp");
+				File artFile = new File("tmp");
+				Artwork cover=ArtworkFactory.createArtworkFromFile(artFile);
+				
+				tag.deleteArtworkField();
+			    tag.setField(cover);
+			    
 				AudioFileIO.write(f);
 				
+				artFile.delete();
 				}	
 				
 				catch (KeyNotFoundException | CannotReadException | IOException | TagException | ReadOnlyFileException | InvalidAudioFrameException | CannotWriteException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				}
-				
+				} 
 				
 				shlRiepilogo.dispose();				
 				
@@ -351,12 +358,15 @@ public class ResultDialog extends Dialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Button button = (Button) e.widget;
+				String url = null;
 				if(button.getText().equals(SMALL))
-					track.getAlbum().setCover(lfmw.getAlbumCoverURL(ImageSize.MEDIUM));
+					url = lfmw.getAlbumCoverURL(ImageSize.MEDIUM);
 				if(button.getText().equals(MEDIUM))
-					track.getAlbum().setCover(lfmw.getAlbumCoverURL(ImageSize.LARGE));
+					url = lfmw.getAlbumCoverURL(ImageSize.LARGE);
 				if(button.getText().equals(LARGE))
-					track.getAlbum().setCover(lfmw.getAlbumCoverURL(ImageSize.EXTRALARGE));
+					url = lfmw.getAlbumCoverURL(ImageSize.EXTRALARGE);
+				
+				track.getAlbum().setCover(url);
 				updateImage();
 			}
 			

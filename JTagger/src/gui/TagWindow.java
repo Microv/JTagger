@@ -1,8 +1,6 @@
 package gui;
 
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,7 +36,6 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.TabFolder;
@@ -395,6 +392,7 @@ public class TagWindow {
 				else {
 					FPDialog dialog = null;
 					dialog = new FPDialog(new Shell(shell), SWT.TITLE);
+					dialog.setFile(file);
 					dialog.setPath(toSaveTrack.getPath());
 					dialog.open();
 					

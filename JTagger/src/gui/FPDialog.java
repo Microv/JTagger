@@ -1,11 +1,14 @@
 package gui;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
+
 import metadata.Track;
+
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
@@ -39,6 +42,7 @@ public class FPDialog extends Dialog {
 	private MusicBrainzWrapper mbw;
 	
 	private ArrayList<Track> tracks;
+	private File file;
 
 	/**
 	 * Create the dialog.
@@ -174,6 +178,7 @@ public class FPDialog extends Dialog {
 					a.setYear(titem.getText(3));
 					result.setAlbum(a);
 					dialog.setTrack(result);*/
+					dialog.setFile(file);
 					dialog.setTrack(tracks.get(Integer.parseInt(titem.getText(0))-1));
 					dialog.open();
 				}
@@ -240,5 +245,9 @@ public class FPDialog extends Dialog {
 	
 	public void setPath(String path) {
 		absolutePath = "\""+path+"\"";
+	}
+
+	public void setFile(File file) {
+		this.file = file;
 	}
 }
