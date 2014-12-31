@@ -371,6 +371,7 @@ public class TagWindow {
 					dialog.setFile(file);
 					dialog.setTag(tag);
 					dialog.open();
+					getInfo(toSaveTrack.getPath());
 				}
 			}
 		});
@@ -395,7 +396,7 @@ public class TagWindow {
 					dialog.setFile(file);
 					dialog.setPath(toSaveTrack.getPath());
 					dialog.open();
-					
+					getInfo(toSaveTrack.getPath());
 				}
 			}
 		});
