@@ -486,17 +486,16 @@ public class ResultDialog extends Dialog {
 				// last.fm wrapper
 				Caller.getInstance().setUserAgent("Mozilla");
 				Caller.getInstance().setProxy(Proxy.NO_PROXY);
-				lfmw = new LastFmWrapper(track.getTitle(), artist, track.getAlbum().getTitle());
+				lfmw = new LastFmWrapper(track.getTitle(), track.getArtists(), track.getAlbum().getTitle());
 				track.setListeners(lfmw.getListeners());
 				track.getAlbum().setCover(lfmw.getAlbumCoverURL(ImageSize.LARGE));
 				
 				// amazon wrapper
-				aw = new AmazonWrapper(track.getTitle(), artist, track.getAlbum().getTitle());
+				aw = new AmazonWrapper(track.getTitle(), track.getArtists(), track.getAlbum().getTitle());
 				System.out.println("Review" + (aw.findReview() ? " " : " not ") + "found.");
 				
 				mbw.setAlbumInformations(track);
 				track.setLyrics(mmw.getLyricsbyScraping(artist,track.getTitle()));
-//				album.setPublisher(mmw.getMatchingTrack(track.getTitle(), track.getArtists()).get("album_copyright"));
 				track.getAlbum().setPublisher(mmw.getMatchingTrack(track.getTitle(), artist).get("album_copyright"));
 				track.setComposer(mmw.getComposer(artist, track.getTitle()));
 				
