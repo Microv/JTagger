@@ -24,7 +24,14 @@ public class AmazonWrapper {
 	public AmazonWrapper(String song, String artist, String album) {
 		this.song = song;
 		this.artist = artist;
-		this.album = album.toLowerCase();
+		
+		album = album.toLowerCase();
+		if (album.endsWith("e.p.") && album.length() > 4)
+			this.album = album.replace("e.p.", "ep");
+		else if (album.endsWith("l.p.") && album.length() > 4)
+			this.album = album.replace("l.p.", "lp");
+		else
+			this.album = album;
 	}
 
 	public boolean findReview() {
