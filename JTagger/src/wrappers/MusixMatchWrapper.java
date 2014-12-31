@@ -264,7 +264,7 @@ import org.xml.sax.SAXException;
 	 *  e per ogni tag <tack> devo restituire i nomi dei cantanti trovati
 	 */
 
-	public	String getComposer(String q_artist, String q_track) throws IOException
+	public	String getComposer(String q_artist, String q_track) 
 	{
 		
 		
@@ -272,7 +272,12 @@ import org.xml.sax.SAXException;
 		//String path ="#content > div.track-view-container > div > div.track-sidebar";
 		String path = ".authors > ul:nth-child(1)";
 		
+		try {
 		jsoup_doc = Jsoup.connect( URL_LYRICS + q_artist + "/" + q_track).userAgent("Mozilla").ignoreHttpErrors(true).timeout(0).get();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			return " No composer available";
+		}
 		
 			
 		Elements testo = jsoup_doc.select(path);	
@@ -284,7 +289,7 @@ import org.xml.sax.SAXException;
 		
 		for( Element e : writers.children())
 			writer = writer.concat(e.text()).concat(", ");
-			*/
+		*/
 
 		Elements writers = testo.first().children();
 		for(Element e : writers)
