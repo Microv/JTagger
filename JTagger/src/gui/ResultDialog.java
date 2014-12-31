@@ -47,9 +47,21 @@ import org.eclipse.swt.graphics.ImageData;
 import org.xml.sax.SAXException;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.audio.exceptions.CannotReadException;
+import org.jaudiotagger.audio.exceptions.CannotWriteException;
+import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
+import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
+import org.jaudiotagger.tag.FieldDataInvalidException;
+import org.jaudiotagger.tag.KeyNotFoundException;
+import org.jaudiotagger.tag.Tag;
+import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.TagException;
 
 import de.umass.lastfm.Caller;
 import de.umass.lastfm.ImageSize;
+
 
 public class ResultDialog extends Dialog {
 
@@ -84,11 +96,15 @@ public class ResultDialog extends Dialog {
 	private MusixMatchWrapper mmw;
 	private AmazonWrapper aw;
 	
+	private Tag tag;
+	
+	
 	
 	/*
 	 * Variabili Temporanee 
 	 */
 	private Track track;
+	private File file;
 
 	/**
 	 * Create the dialog.
@@ -276,6 +292,44 @@ public class ResultDialog extends Dialog {
 		btnNewButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+			
+				AudioFile f;
+				
+				try {
+					
+				f = AudioFileIO.read(file);
+				tag = f.getTag();
+				
+				
+					
+				tag.setField(FieldKey.TITLE,track.getTitle());
+				tag.setField(FieldKey.ARTIST,track.getArtists());
+				tag.setField(FieldKey.COMPOSER, track.getComposer());
+				//	tag.setField(FieldKey.COMMENT , track.getComment()); Argument cannot be null
+				tag.setField(FieldKey.ALBUM, track.getAlbum().getTitle());
+				tag.setField(FieldKey.ALBUM_ARTIST, track.getAlbum().getAlbumArtist());
+				tag.setField(FieldKey.YEAR, track.getAlbum().getYear());
+			//	tag.setField(FieldKey.GENRE, track.getAlbum().getGenre());
+				tag.setField(FieldKey.PRODUCER, track.getAlbum().getPublisher());
+				tag.setField(FieldKey.TRACK, track.getTrackNum());
+				tag.setField(FieldKey.TRACK_TOTAL, track.getAlbum().getTrackCount());
+				tag.setField(FieldKey.DISC_NO, track.getDiscNum());
+				tag.setField(FieldKey.DISC_TOTAL, track.getAlbum().getMediumCount());
+				tag.setField(FieldKey.LYRICS, track.getLyrics());
+			//	tag.setField(FieldKey.COVER_ART,track.getAlbum().getCover());
+				
+				AudioFileIO.write(f);
+				
+				}	
+				
+				catch (KeyNotFoundException | CannotReadException | IOException | TagException | ReadOnlyFileException | InvalidAudioFrameException | CannotWriteException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+				
+				shlRiepilogo.dispose();				
+				
 			}
 		});
 		btnNewButton.setBounds(449, 503, 95, 28);
@@ -384,7 +438,10 @@ public class ResultDialog extends Dialog {
 			e.printStackTrace();
 		}
 	}
-
+	public void setFile(File f) {
+		this.file = f;
+	}
+	
 	public void setTrack(Track result2) {
 		this.track = result2;
 		ProgressMonitorDialog dialog = new ProgressMonitorDialog(new Shell());

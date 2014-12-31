@@ -105,6 +105,7 @@ public class TagWindow {
 	
 	private Tag tag;
 	private Track toSaveTrack;
+	private File file;
 	
 	/**
 	 * Launch the application.
@@ -370,6 +371,7 @@ public class TagWindow {
 				}
 				else {
 					QueryDialog dialog = new QueryDialog(new Shell(shell), SWT.TITLE);
+					dialog.setFile(file);
 					dialog.setTag(tag);
 					dialog.open();
 				}
@@ -543,7 +545,7 @@ public class TagWindow {
 	}
 	
 	private void getInfo(String path) {
-		File file = new File(path);
+	    file = new File(path);
 		AudioFile f = null;
 		try {
 			f = AudioFileIO.read(file);

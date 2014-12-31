@@ -1,11 +1,14 @@
 package gui;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
+
 import metadata.Track;
+
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -30,6 +33,7 @@ import org.jaudiotagger.tag.Tag;
 import org.xml.sax.SAXException;
 
 import wrappers.MusicBrainzWrapper;
+
 import org.eclipse.swt.widgets.ProgressBar;
 
 public class QueryDialog extends Dialog {
@@ -42,6 +46,8 @@ public class QueryDialog extends Dialog {
 	private Table table;
 	private ProgressBar progressBar;
 	private Tag tag;
+	private File file;
+	
 
 	
 	private ArrayList<Track> tracks = null;
@@ -210,6 +216,7 @@ public class QueryDialog extends Dialog {
 					a.setYear(titem.getText(3));
 					result.setAlbum(a);
 					dialog.setTrack(result);*/
+					dialog.setFile(file);
 					dialog.setTrack(tracks.get(Integer.parseInt(titem.getText(0))-1));
 					dialog.open();
 					/*
@@ -224,6 +231,11 @@ public class QueryDialog extends Dialog {
 	public void setTag(Tag tag) {
 		this.tag = tag;
 	}
+	
+	public void setFile(File f){
+		this.file = f;
+	}
+	
 	
 	class QueryListener implements Listener{
 
