@@ -61,7 +61,7 @@ public class AmazonWrapper {
 				artist = artist.split(" feat. ")[0];
 			else
 				inFirstAttempt = true;
-		} while (--attempts > 0 || !inFirstAttempt);
+		} while (--attempts > 0 && !inFirstAttempt);
 		
 		if (results.size() < 1) {
 			reviewInfo = NO_REVIEWS;

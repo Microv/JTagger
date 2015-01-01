@@ -51,7 +51,7 @@ public class LastFmWrapper {
 					break;
 				}
 			}
-		} while (--attempts > 0 || !inFirstAttempt);
+		} while (--attempts > 0 && !inFirstAttempt);
 
 		Track trackInfo = Track.getInfo(artists, title, API_KEY);
 		return trackInfo.getListeners();
