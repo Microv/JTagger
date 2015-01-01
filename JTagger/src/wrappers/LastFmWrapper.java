@@ -30,15 +30,28 @@ public class LastFmWrapper {
 		}
 
 		String title = "", artists = "";
-		for (Track track : tracks) {
-			String trackName = track.getName().toLowerCase();
-			
-			if (song.contains(trackName) || trackName.contains(song)) {
-				title = trackName;
-				artists = track.getArtist();
-				break;
+		int attempts = 2;
+		boolean inFirstAttempt = false;
+		do {
+			for (Track track : tracks) {
+				String trackName = track.getName().toLowerCase();
+				
+				if (attempts < 2) {
+					if (song.contains(trackName) || trackName.contains(song)) {
+						title = trackName;
+						artists = track.getArtist();
+						break;
+					}
+				}
+				
+				if (trackName.equalsIgnoreCase(song)) {
+					title = trackName;
+					artists = track.getArtist();
+					inFirstAttempt = true;
+					break;
+				}
 			}
-		}
+		} while (--attempts > 0 || !inFirstAttempt);
 
 		Track trackInfo = Track.getInfo(artists, title, API_KEY);
 		return trackInfo.getListeners();
