@@ -41,6 +41,7 @@ public class LastFmWrapper {
 		}
 
 		Track trackInfo = Track.getInfo(artists, title, API_KEY);
+		if(trackInfo == null) return 0;
 		return trackInfo.getListeners();
 	}
 
