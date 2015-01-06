@@ -449,7 +449,7 @@ public class TagWindow {
 		lblChannels.setText("Channels");
 		
 		playerButton = new Button(grpInfo, SWT.NONE);
-		playerButton.setBounds(57, 190, 107, 36);
+		playerButton.setBounds(75, 190, 58, 36);
 		playerButton.setImage(SWTResourceManager
 				.getImage(TagWindow.class, "/gui/img/media-playback-start-8.png"));
 		

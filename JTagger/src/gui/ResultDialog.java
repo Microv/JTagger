@@ -92,9 +92,6 @@ public class ResultDialog extends Dialog {
 	
 	private Display display;
 	
-	
-	@SuppressWarnings("unused")
-	private AllMusicWrapper amw;
 	private LastFmWrapper lfmw;
 	
 	private Tag tag;
@@ -150,7 +147,7 @@ public class ResultDialog extends Dialog {
 		
 		Group grpMain = new Group(shlRiepilogo, SWT.NONE);
 		grpMain.setText("Main info");
-		grpMain.setBounds(10, 44, 257, 194);
+		grpMain.setBounds(10, 44, 257, 222);
 		
 		Label lblAlbum = new Label(grpMain, SWT.NONE);
 		lblAlbum.setBounds(10, 110, 60, 14);
@@ -427,7 +424,7 @@ public class ResultDialog extends Dialog {
 		
 		Label lblPoweredBy = new Label(shlRiepilogo, SWT.NONE);
 		lblPoweredBy.setFont(SWTResourceManager.getFont("Sans", 10, SWT.NORMAL));
-		lblPoweredBy.setBounds(616, 10, 78, 13);
+		lblPoweredBy.setBounds(616, 10, 78, 28);
 		lblPoweredBy.setText("Powered By");
 		
 		updateImage();
@@ -555,9 +552,11 @@ public class ResultDialog extends Dialog {
 			@Override
 			public void run() {
 				MusixMatchWrapper mmw = null;
+				AllMusicWrapper amw = null;
 				// MusixMatch wrapper
 				try {
 					mmw = new MusixMatchWrapper();
+					amw = new AllMusicWrapper();
 				} catch (ParserConfigurationException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -567,6 +566,8 @@ public class ResultDialog extends Dialog {
 					try {
 						track.getAlbum().setPublisher(mmw.getMatchingTrack(track.getTitle(), artist).get("album_copyright"));
 						track.setComposer(mmw.getComposer(artist, track.getTitle()));
+						if(track.getComposer() == null)
+							amw.getComposer(track.getTitle(), artist);
 						break;
 					} catch (IOException e) {
 						System.out.println("Problem: trying again...");
