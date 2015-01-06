@@ -9,6 +9,7 @@ import java.net.Proxy;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.xml.parsers.ParserConfigurationException;
@@ -91,15 +92,13 @@ public class ResultDialog extends Dialog {
 	
 	private Display display;
 	
-	private MusicBrainzWrapper mbw;
+	
 	@SuppressWarnings("unused")
 	private AllMusicWrapper amw;
 	private LastFmWrapper lfmw;
-	private MusixMatchWrapper mmw;
-	private AmazonWrapper aw;
 	
 	private Tag tag;
-	
+	private String artist;
 	
 	
 	/*
@@ -469,55 +468,130 @@ public class ResultDialog extends Dialog {
 		 *  Inserire all'interno del try le informazioni da assegnare
 		 *   a 'track' ( per visualizzarle nel dialog)
 		 */
-		int attempts = 10;
-		while(attempts > 0) {
-			try {
-				mbw = new MusicBrainzWrapper();
-				amw = new AllMusicWrapper();
-				mmw = new MusixMatchWrapper();
+		
+		int ind = track.getArtists().indexOf(" feat. ");
+		if(ind > 0)
+			artist = track.getArtists().substring(0, ind);
+		else 
+			artist = track.getArtists();
 				
-				String artist = "";
-				int ind = track.getArtists().indexOf(" feat. ");
-				if(ind > 0)
-					artist = track.getArtists().substring(0, ind);
-				else 
-					artist = track.getArtists();
-				
+		ArrayList<Thread> threads = new ArrayList<Thread>();
+		threads.add(new Thread( new Runnable() {		
+			@Override
+			public void run() {
 				// last.fm wrapper
 				Caller.getInstance().setUserAgent("Mozilla");
 				Caller.getInstance().setProxy(Proxy.NO_PROXY);
 				lfmw = new LastFmWrapper(track.getTitle(), artist, track.getAlbum().getTitle());
 				track.setListeners(lfmw.getListeners());
-				track.getAlbum().setCover(lfmw.getAlbumCoverURL(ImageSize.LARGE));
+				track.getAlbum().setCover(lfmw.getAlbumCoverURL(ImageSize.LARGE));				
+			}
+		}));
+		threads.get(0).start();
 				
+		threads.add(new Thread(new Runnable() {
+			@Override
+			public void run() {
 				// amazon wrapper
-				aw = new AmazonWrapper(track.getTitle(), artist, track.getAlbum().getTitle());
-				System.out.println("Review" + (aw.findReview() ? " " : " not ") + "found.");
+				AmazonWrapper aw = new AmazonWrapper(track.getTitle(), artist, track.getAlbum().getTitle());
+				/*System.out.println("Review" + (*/aw.findReview() /*? " " : " not ") + "found.")*/;	
+			}
+		}));
+		threads.get(1).start();
 				
-				mbw.setAlbumInformations(track);
-				track.setLyrics(mmw.getLyricsbyScraping(artist,track.getTitle()));
+		threads.add(new Thread(new Runnable() {
+			@Override
+			public void run() {
+				MusicBrainzWrapper mbw = null;
+				// MusicBrainz wrapper
+				try {
+					mbw = new MusicBrainzWrapper();
+				} catch (ParserConfigurationException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				int attempts = 10;
+				while(attempts > 0) {
+					try {
+						mbw.setAlbumInformations(track);
+						break;
+					} catch (XPathExpressionException | SAXException
+							| IOException e) {
+						System.out.println("Problem: trying again...");
+						attempts--;
+					}
+				}
+			}
+		}));
+		threads.get(2).start();
+				
+		threads.add(new Thread(new Runnable() {
+			@Override
+			public void run() {
+				MusixMatchWrapper mmw = null;
+				// MusixMatch wrapper
+				try {
+					mmw = new MusixMatchWrapper();
+					} catch (ParserConfigurationException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					int attempts = 5;
+					while(attempts > 0) {
+						try {
+							track.setLyrics(mmw.getLyricsbyScraping(artist,track.getTitle()));
+							break;
+						} catch (IOException e) {
+							System.out.println("Problem: trying again...");
+							attempts--;
+						}
+					}
+			}
+		}));
+		threads.get(3).start();
 //				album.setPublisher(mmw.getMatchingTrack(track.getTitle(), track.getArtists()).get("album_copyright"));
-				track.getAlbum().setPublisher(mmw.getMatchingTrack(track.getTitle(), artist).get("album_copyright"));
-				track.setComposer(mmw.getComposer(artist, track.getTitle()));
 				
-				break;
-			} catch (ParserConfigurationException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (XPathExpressionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				System.out.println("Trying again...");
-				attempts--;
-			} catch (SAXException e) {
+		threads.add(new Thread(new Runnable() {
+			@Override
+			public void run() {
+				MusixMatchWrapper mmw = null;
+				// MusixMatch wrapper
+				try {
+					mmw = new MusixMatchWrapper();
+				} catch (ParserConfigurationException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				int attempts = 5;
+				while(attempts > 0) {
+					try {
+						track.getAlbum().setPublisher(mmw.getMatchingTrack(track.getTitle(), artist).get("album_copyright"));
+						track.setComposer(mmw.getComposer(artist, track.getTitle()));
+						break;
+					} catch (IOException e) {
+						System.out.println("Problem: trying again...");
+						attempts--;
+					} catch (XPathExpressionException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (SAXException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}));
+		threads.get(4).start();
+		
+		for(Thread t : threads)
+			try {
+				t.join();
+			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
-		
 	}
-	
+		
 	class InfoGetter implements IRunnableWithProgress {
 
 		@Override
