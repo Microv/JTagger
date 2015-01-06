@@ -481,7 +481,8 @@ public class ResultDialog extends Dialog {
 				Caller.getInstance().setProxy(Proxy.NO_PROXY);
 				lfmw = new LastFmWrapper(track.getTitle(), artist, track.getAlbum().getTitle());
 				track.setListeners(lfmw.getListeners());
-				track.getAlbum().setCover(lfmw.getAlbumCoverURL(ImageSize.LARGE));				
+				track.getAlbum().setCover(lfmw.getAlbumCoverURL(ImageSize.LARGE));		
+				System.out.println("Last.fm wrapper has done");
 			}
 		}));
 		threads.get(0).start();
@@ -492,6 +493,7 @@ public class ResultDialog extends Dialog {
 				// amazon wrapper
 				AmazonWrapper aw = new AmazonWrapper(track.getTitle(), artist, track.getAlbum().getTitle());
 				/*System.out.println("Review" + (*/aw.findReview() /*? " " : " not ") + "found.")*/;	
+				System.out.println("Amazon wrapper has done");
 			}
 		}));
 		threads.get(1).start();
@@ -518,6 +520,7 @@ public class ResultDialog extends Dialog {
 						attempts--;
 					}
 				}
+				System.out.println("MusicBrainz wrapper has done");
 			}
 		}));
 		threads.get(2).start();
@@ -543,6 +546,7 @@ public class ResultDialog extends Dialog {
 							attempts--;
 						}
 					}
+					System.out.println("MusixMatch (Scraping) wrapper has done");
 			}
 		}));
 		threads.get(3).start();
@@ -580,6 +584,7 @@ public class ResultDialog extends Dialog {
 						e.printStackTrace();
 					}
 				}
+				System.out.println("MusixMatch / AllMusic wrapper has done");
 			}
 		}));
 		threads.get(4).start();
