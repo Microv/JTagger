@@ -46,9 +46,11 @@ import org.eclipse.swt.widgets.TableItem;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
+import org.jaudiotagger.audio.exceptions.CannotWriteException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.KeyNotFoundException;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagException;
 import org.jaudiotagger.tag.TagField;
@@ -58,6 +60,8 @@ import org.jaudiotagger.tag.id3.ID3v23Frame;
 import org.jaudiotagger.tag.id3.ID3v24Frame;
 import org.jaudiotagger.tag.id3.framebody.FrameBodyAPIC;
 import org.jaudiotagger.tag.id3.framebody.FrameBodyPIC;
+import org.jaudiotagger.tag.images.Artwork;
+import org.jaudiotagger.tag.images.ArtworkFactory;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -65,6 +69,7 @@ import org.eclipse.swt.events.SelectionEvent;
 
 import utility.ImageUtil;
 import utility.PlayerThread;
+import utility.SaveImageFromUrl;
 
 public class TagWindow {
 	
@@ -103,6 +108,8 @@ public class TagWindow {
 	private Tag tag;
 	private Track toSaveTrack;
 	private File file;
+	
+	private static String path;
 	
 	/**
 	 * Launch the application.
@@ -406,6 +413,51 @@ public class TagWindow {
 		toolItem_save.setToolTipText("Save");
 		toolItem_save.setWidth(2);
 		toolItem_save.setImage(SWTResourceManager.getImage(TagWindow.class, "/gui/img/save.png"));
+		toolItem_save.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				AudioFile f;
+				
+				try {
+	
+				f = AudioFileIO.read(file);
+				tag = f.getTag();
+					
+				tag.setField(FieldKey.TITLE, textTitle.getText());
+				tag.setField(FieldKey.ARTIST,  textArtist.getText());
+				tag.setField(FieldKey.COMPOSER, textComposer.getText());
+				tag.setField(FieldKey.COMMENT, textComment.getText());
+				tag.setField(FieldKey.ALBUM,  textAlbum.getText());
+				tag.setField(FieldKey.ALBUM_ARTIST, textAlbumArtist.getText());
+				tag.setField(FieldKey.YEAR, textYear.getText());
+				tag.setField(FieldKey.GENRE, textGenre.getText());
+				tag.setField(FieldKey.PRODUCER, textPublisher.getText());
+				tag.setField(FieldKey.TRACK, textTrackno1.getText());
+				tag.setField(FieldKey.TRACK_TOTAL, textTrackNo2.getText());
+				tag.setField(FieldKey.DISC_NO, textDiscNo1.getText());
+				tag.setField(FieldKey.DISC_TOTAL, textDiscNo2.getText());
+				tag.setField(FieldKey.LYRICS, textLyrics.getText());
+				
+				if(path != null) {
+					File artFile = new File(path);
+					Artwork cover=ArtworkFactory.createArtworkFromFile(artFile);
+				
+					tag.deleteArtworkField();
+					tag.setField(cover);
+			    
+					AudioFileIO.write(f);
+				
+					artFile.delete();
+				}	
+				else
+					AudioFileIO.write(f);
+				} catch (KeyNotFoundException | CannotReadException | IOException | TagException | ReadOnlyFileException | InvalidAudioFrameException | CannotWriteException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} 
+			}
+		});
+		
 		
 		Group grpInfo = new Group(shell, SWT.NONE);
 		fd_grpCoverArt.bottom = new FormAttachment(100, -269);
@@ -679,7 +731,7 @@ public class TagWindow {
 	}
 	
 	class OpenIMGListener implements Listener {
-		
+
 		public void handleEvent(Event event) {
 	        FileDialog fileDialog = new FileDialog(shell, SWT.SINGLE);
 	
@@ -687,7 +739,7 @@ public class TagWindow {
 	        fileDialog.setFilterExtensions(new String[]{"*.png", "*.jpg", "*.bmp", "*.*"});
 	        fileDialog.setFilterNames(new String[]{"PNG", "JPG", "BMP",  "ANY"});
 	        
-	        String path = fileDialog.open();
+	        path = fileDialog.open();
 	
 	        if(path != null) {
 	        	//toSaveTag.getAlbum().setCover(path);

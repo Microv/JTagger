@@ -286,8 +286,8 @@ public class ResultDialog extends Dialog {
 		lblCoverArt = new Label(grpCover, SWT.NONE);
 		lblCoverArt.setBounds(10, 13, 160, 158);
 		
-		Button btnNewButton = new Button(shlRiepilogo, SWT.NONE);
-		btnNewButton.addSelectionListener(new SelectionAdapter() {
+		Button btnSaveButton = new Button(shlRiepilogo, SWT.NONE);
+		btnSaveButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 			
@@ -334,8 +334,8 @@ public class ResultDialog extends Dialog {
 				
 			}
 		});
-		btnNewButton.setBounds(449, 503, 95, 28);
-		btnNewButton.setText("Save");
+		btnSaveButton.setBounds(449, 503, 95, 28);
+		btnSaveButton.setText("Save");
 		
 		Button btnCancel = new Button(shlRiepilogo, SWT.NONE);
 		btnCancel.setText("Cancel");
