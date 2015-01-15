@@ -66,10 +66,10 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 
 import utility.ImageUtil;
 import utility.PlayerThread;
-import utility.SaveImageFromUrl;
 
 public class TagWindow {
 	
@@ -145,9 +145,9 @@ public class TagWindow {
 	 */
 	protected void createContents() {
 		shell = new Shell();
-		//shell.setImage(SWTResourceManager.getImage("../../JTagger/img/floppy13.png"));
+		shell.setImage(SWTResourceManager.getImage(TagWindow.class, "/gui/img/JTagger.png"));
 		shell.setSize(1098, 647);
-		shell.setText("SWT Application");
+		shell.setText("JTagger v1.0");
 		FormLayout fl_shell = new FormLayout();
 		shell.setLayout(fl_shell);
 		
@@ -295,6 +295,20 @@ public class TagWindow {
 		
 		MenuItem mntmInfo = new MenuItem(menu_2, SWT.NONE);
 		mntmInfo.setText("Info");
+		mntmInfo.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				InfoDialog dialog = new InfoDialog(shell, SWT.TITLE);
+				dialog.open();
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		
 		TabFolder tabFolder = new TabFolder(shell, SWT.NONE);
 		fd_group_1.right = new FormAttachment(tabFolder, -6);

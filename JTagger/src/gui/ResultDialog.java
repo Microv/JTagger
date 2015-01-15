@@ -140,7 +140,7 @@ public class ResultDialog extends Dialog {
 		shlRiepilogo.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
 		shlRiepilogo.setImage(null);
 		shlRiepilogo.setSize(942, 566);
-		shlRiepilogo.setText("Riepilogo");
+		shlRiepilogo.setText("Results");
 		
 		Label label = new Label(shlRiepilogo, SWT.SEPARATOR | SWT.VERTICAL);
 		label.setBounds(273, 44, 14, 443);
