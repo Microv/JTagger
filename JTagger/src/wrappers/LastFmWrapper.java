@@ -12,11 +12,15 @@ public class LastFmWrapper {
 	private Album albumInfo;
 	
 	public LastFmWrapper(String song, String artist, String album) {
-		this.song = song.toLowerCase();
+		this.song = replaceString(song).toLowerCase();
 		this.artist = artist;
 		this.album = album;
 	}
 	
+	private String replaceString(String string) {
+		return string.replaceAll("[’]", "'");
+	}
+
 	public String getAlbumCoverURL(ImageSize is) {
 		return albumInfo.getImageURL(is);
 	}
@@ -30,15 +34,28 @@ public class LastFmWrapper {
 		}
 
 		String title = "", artists = "";
-		for (Track track : tracks) {
-			String trackName = track.getName().toLowerCase();
-			
-			if (song.contains(trackName) || trackName.contains(song)) {
-				title = trackName;
-				artists = track.getArtist();
-				break;
+		int attempts = 2;
+		boolean inFirstAttempt = false;
+		do {
+			for (Track track : tracks) {
+				String trackName = track.getName().toLowerCase();
+				
+				if (attempts < 2) {
+					if (song.contains(trackName) || trackName.contains(song)) {
+						title = trackName;
+						artists = track.getArtist();
+						break;
+					}
+				}
+				
+				if (trackName.equalsIgnoreCase(song)) {
+					title = trackName;
+					artists = track.getArtist();
+					inFirstAttempt = true;
+					break;
+				}
 			}
-		}
+		} while (--attempts > 0 && !inFirstAttempt);
 
 		Track trackInfo = Track.getInfo(artists, title, API_KEY);
 		if(trackInfo == null) return 0;

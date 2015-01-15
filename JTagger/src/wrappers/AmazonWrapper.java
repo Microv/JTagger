@@ -24,27 +24,45 @@ public class AmazonWrapper {
 	public AmazonWrapper(String song, String artist, String album) {
 		this.song = song;
 		this.artist = artist;
-		this.album = album.toLowerCase();
+		
+		album = album.toLowerCase();
+		if (album.endsWith("e.p.") && album.length() > 4)
+			this.album = album.replace("e.p.", "ep");
+		else if (album.endsWith("l.p.") && album.length() > 4)
+			this.album = album.replace("l.p.", "lp");
+		else
+			this.album = album;
 	}
 
 	public boolean findReview() {
 		String reviewInfo = "";
 
-		String track = replaceString(song);
-		String art = replaceString(artist);
-		String alb = replaceString(album);
-		String query = LINK + track + "+" + art + "+" + alb;
-
+		int attempts = 2;
+		boolean inFirstAttempt = false;
 		Document dirtyDocument = null, cleanDocument = null;
-		try {
-			dirtyDocument = Jsoup.connect(query).timeout(0).userAgent("Mozilla").get();
-		} catch (IOException e) {
-			logger.severe("Problem to linking to " + query);
-			e.printStackTrace();
-			System.exit(1);
-		}
+		Elements results;
+		String query;
+		do {
+			String track = replaceString(song);
+			String art = replaceString(artist);
+			String alb = replaceString(album);
+			query = LINK + track + "+" + art + "+" + alb;
 
-		Elements results = dirtyDocument.select("tr[name]");
+			try {
+				dirtyDocument = Jsoup.connect(query).timeout(0).userAgent("Mozilla").get();
+			} catch (IOException e) {
+				logger.severe("Problem to linking to " + query);
+				e.printStackTrace();
+				System.exit(1);
+			}
+
+			results = dirtyDocument.select("tr[name]");
+			if (results.size() < 1)
+				artist = artist.split(" feat. ")[0];
+			else
+				inFirstAttempt = true;
+		} while (--attempts > 0 && !inFirstAttempt);
+		
 		if (results.size() < 1) {
 			reviewInfo = NO_REVIEWS;
 			createAmazonPage(reviewInfo);
