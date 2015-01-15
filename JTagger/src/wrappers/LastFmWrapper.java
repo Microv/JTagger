@@ -12,11 +12,15 @@ public class LastFmWrapper {
 	private Album albumInfo;
 	
 	public LastFmWrapper(String song, String artist, String album) {
-		this.song = song.toLowerCase();
+		this.song = replaceString(song).toLowerCase();
 		this.artist = artist;
 		this.album = album;
 	}
 	
+	private String replaceString(String string) {
+		return string.replaceAll("[’]", "'");
+	}
+
 	public String getAlbumCoverURL(ImageSize is) {
 		return albumInfo.getImageURL(is);
 	}
