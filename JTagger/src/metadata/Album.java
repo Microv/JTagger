@@ -4,7 +4,6 @@ public class Album {
 	
 	private String title;
 	private String year;
-	private String genre;
 	private String cover;
 	private String albumArtist;
 	private String publisher; 
@@ -66,14 +65,6 @@ public class Album {
 
 	public void setYear(String year) {
 		this.year = year;
-	}
-
-	public String getGenre() {
-		return genre;
-	}
-
-	public void setGenre(String genre) {
-		this.genre = genre;
 	}
 
 	public String getCover() {

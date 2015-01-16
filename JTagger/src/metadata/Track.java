@@ -8,16 +8,10 @@ public class Track {
 	private String lyrics;
 	private String trackNum;
 	private String discNum;
-	public String getDiscNum() {
-		return discNum;
-	}
-
-	public void setDiscNum(String discNum) {
-		this.discNum = discNum;
-	}
-
 	private String composer;
 	private String comment;
+	private int listeners;
+	private String genre;
 	
 	public String getComment() {
 		return comment;
@@ -89,13 +83,28 @@ public class Track {
 		this.path = path;
 	}
 	
-	private int listeners;
-	
 	public int getListeners() {
 		return listeners;
 	}
 
 	public void setListeners(int listeners) {
 		this.listeners = listeners;
+	}
+	
+	public String getDiscNum() {
+		return discNum;
+	}
+
+	public void setDiscNum(String discNum) {
+		this.discNum = discNum;
+	}
+
+	
+	public void setGenre(String genre) {
+		this.genre = genre;
+	}
+	
+	public String getGenre() {
+		return genre;
 	}
 }

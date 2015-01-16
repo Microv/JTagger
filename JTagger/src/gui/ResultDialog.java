@@ -10,6 +10,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.xml.parsers.ParserConfigurationException;
@@ -224,6 +225,7 @@ public class ResultDialog extends Dialog {
 		
 		genre_text = new Text(grpOtherInfo, SWT.BORDER);
 		genre_text.setBounds(94, 115, 149, 19);
+		genre_text.setText(track.getGenre());
 		
 		publisher_text = new Text(grpOtherInfo, SWT.BORDER | SWT.WRAP | SWT.MULTI);
 		publisher_text.setBounds(94, 145, 149, 36);
@@ -305,7 +307,7 @@ public class ResultDialog extends Dialog {
 				tag.setField(FieldKey.ALBUM, album_text.getText());
 				tag.setField(FieldKey.ALBUM_ARTIST, albumArtist_text.getText());
 				tag.setField(FieldKey.YEAR, year_text.getText());
-			//	tag.setField(FieldKey.GENRE, track.getAlbum().getGenre());
+				tag.setField(FieldKey.GENRE, genre_text.getText());
 				tag.setField(FieldKey.PRODUCER, publisher_text.getText());
 				tag.setField(FieldKey.TRACK, trackn1_text.getText());
 				tag.setField(FieldKey.TRACK_TOTAL, trackn2_text.getText());
@@ -569,6 +571,8 @@ public class ResultDialog extends Dialog {
 					try {
 						track.getAlbum().setPublisher(mmw.getMatchingTrack(track.getTitle(), artist).get("album_copyright"));
 						track.setComposer(mmw.getComposer(artist, track.getTitle()));
+						Map<String,Object> result =mmw.getMatchingTrack(track.getTitle(), artist);
+						track.setGenre(result.get("music_genre").toString());
 						if(track.getComposer() == null)
 							amw.getComposer(track.getTitle(), artist);
 						break;
