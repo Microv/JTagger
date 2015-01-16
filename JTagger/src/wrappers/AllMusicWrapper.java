@@ -42,7 +42,7 @@ public class AllMusicWrapper {
        
 	}
 	
-	public String getLabel(String artist, String album, int year) {
+	public String getLabel(String artist, String album, int year) throws IOException {
 		String label = "";
 		String query, albumToSearch = album;
 		int attempts = 2, index = -1;
@@ -52,14 +52,9 @@ public class AllMusicWrapper {
 		do {
 			query = SEARCH_ALBUM_LINK + albumToSearch;
 
-			try {
-				dirtyDocument = Jsoup.connect(query).timeout(0)
+			dirtyDocument = Jsoup.connect(query).timeout(0)
 						.userAgent("Mozilla").get();
-			} catch (IOException e) {
-				logger.severe("Problem to linking at " + query);
-				e.printStackTrace();
-				System.exit(1);
-			}
+			
 
 			String cssQuery = "li.album > div.info:has(div.artist:has(a:contains("
 					+ artist + "))) > div.title > a";
