@@ -213,7 +213,7 @@ public class ResultDialog extends Dialog {
 		
 		Label lblPublisher = new Label(grpOtherInfo, SWT.NONE);
 		lblPublisher.setBounds(10, 145, 60, 14);
-		lblPublisher.setText("Publisher");
+		lblPublisher.setText("Label");	//Publisher
 		
 		composer_text = new Text(grpOtherInfo, SWT.BORDER | SWT.WRAP | SWT.MULTI);
 		composer_text.setBounds(94, 17, 149, 40);
@@ -569,7 +569,11 @@ public class ResultDialog extends Dialog {
 				int attempts = 5;
 				while(attempts > 0) {
 					try {
-						track.getAlbum().setPublisher(mmw.getMatchingTrack(track.getTitle(), artist).get("album_copyright"));
+						int year = Integer.parseInt(track.getAlbum().getYear().split("-")[0]);
+						track.getAlbum().setPublisher(amw.getLabel(track.getArtists(), track.getAlbum().getTitle(), year));
+						if (track.getAlbum().getPublisher().equals("Label not found"))
+							track.getAlbum().setPublisher(mmw.getMatchingTrack(track.getTitle(), artist).get("album_copyright"));
+						
 						track.setComposer(mmw.getComposer(artist, track.getTitle()));
 						Map<String,Object> result =mmw.getMatchingTrack(track.getTitle(), artist);
 						track.setGenre(result.get("music_genre").toString());

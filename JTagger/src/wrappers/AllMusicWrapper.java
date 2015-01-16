@@ -1,6 +1,7 @@
 package wrappers;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -8,9 +9,13 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 public class AllMusicWrapper {
+	private static final String SEARCH_ALBUM_LINK = "http://www.allmusic.com/search/album/";
+	private static final String LABEL_NOT_FOUND = "Label not found";
 	
+	private static Logger logger = Logger.getLogger("global");
 	private static String link = "http://www.allmusic.com/search/all/";
 	private static String path = "#cmn_wrap > div.content-container > div.content > div > ul > li";
+	
 	private Document doc;
 	
 	public AllMusicWrapper() {
@@ -35,6 +40,87 @@ public class AllMusicWrapper {
         }
         return composer;
        
+	}
+	
+	public String getLabel(String artist, String album, int year) {
+		String label = "";
+		String query, albumToSearch = album;
+		int attempts = 2, index = -1;
+		boolean inFirstAttempt = false;
+		Document dirtyDocument = null;
+		Element el;
+		do {
+			query = SEARCH_ALBUM_LINK + albumToSearch;
+
+			try {
+				dirtyDocument = Jsoup.connect(query).timeout(0)
+						.userAgent("Mozilla").get();
+			} catch (IOException e) {
+				logger.severe("Problem to linking at " + query);
+				e.printStackTrace();
+				System.exit(1);
+			}
+
+			String cssQuery = "li.album > div.info:has(div.artist:has(a:contains("
+					+ artist + "))) > div.title > a";
+			el = dirtyDocument.select(cssQuery).first();
+
+			if (el == null) {
+				index = albumToSearch.lastIndexOf('(');
+				if (index > 0)
+					albumToSearch = albumToSearch.substring(0, index).trim();
+			} else
+				inFirstAttempt = true;
+		} while (--attempts > 0 && !inFirstAttempt);
+		
+		if (el == null)	return LABEL_NOT_FOUND;
+
+		query = el.attr("href").concat("/releases");
+		try {
+			dirtyDocument = Jsoup.connect(query).timeout(0)
+					.userAgent("Mozilla").get();
+		} catch (IOException e) {
+			logger.severe("Problem to linking at " + query);
+			e.printStackTrace();
+			System.exit(1);
+		}
+		
+		if (index > 0) {
+			album = album.replace('(', '[');
+			album = album.replace(')', ']');
+		}
+
+		String cssQuery = "tr:has(td.format:contains(CD) + td[data-sort-value*="
+				+ album + "] ~ td.year:contains(" + year + "))";
+		Element labelEl = dirtyDocument.select(cssQuery).first();
+		if (labelEl == null) {
+			cssQuery = "tr:has(td.format:contains(CD))";
+			Elements yearEls = dirtyDocument.select(cssQuery + " > td.year");
+			Element yearEl = yearEls.get(0);
+			int yearToExtract = Integer.parseInt(yearEl.text());
+			int diff = ~(yearToExtract - year - 1);
+			for (int i = 1; i < yearEls.size(); i++) {
+				yearEl = yearEls.get(i);
+				if (yearEl.text().isEmpty())
+					continue;
+
+				int yearVal = Integer.parseInt(yearEl.text());
+				if (diff > yearVal - year) {
+					if (yearVal - year < 0)
+						diff = ~(yearVal - year - 1);
+					else
+						diff = yearVal - year;
+					yearToExtract = yearVal;
+				}
+			}
+
+			cssQuery = "tr:has(td.format:contains(CD) ~ td.year:contains("
+					+ yearToExtract + "))";
+			labelEl = dirtyDocument.select(cssQuery).first();
+		}
+
+		label = labelEl.select("div.label").text();
+		return label;
 	}
 	
 	public static void main(String[] args) {

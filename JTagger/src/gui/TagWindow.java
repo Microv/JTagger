@@ -208,7 +208,7 @@ public class TagWindow {
 		label_6.setBounds(10, 135, 62, 14);
 		
 		Label label_7 = new Label(group_1, SWT.NONE);
-		label_7.setText("Publisher");
+		label_7.setText("Label");	//Publisher
 		label_7.setBounds(10, 176, 62, 14);
 		
 		textAlbum = new Text(group_1, SWT.BORDER);
