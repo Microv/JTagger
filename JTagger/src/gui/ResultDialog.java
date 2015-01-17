@@ -494,8 +494,8 @@ public class ResultDialog extends Dialog {
 			public void run() {
 				// amazon wrapper
 				AmazonWrapper aw = new AmazonWrapper(track.getTitle(), artist, track.getAlbum().getTitle());
-				/*System.out.println("Review" + (*/aw.findReview() /*? " " : " not ") + "found.")*/;	
-				System.out.println("Amazon wrapper has done");
+				System.out.print("Amazon wrapper has done: ");
+				System.out.println("review" + (aw.findReview() ? " " : " not ") + "found.");
 			}
 		}));
 		threads.get(1).start();
@@ -575,10 +575,12 @@ public class ResultDialog extends Dialog {
 							track.getAlbum().setPublisher(mmw.getMatchingTrack(track.getTitle(), artist).get("album_copyright"));
 						
 						track.setComposer(mmw.getComposer(artist, track.getTitle()));
+						if (track.getComposer().isEmpty())
+							track.setComposer(amw.getComposers(track.getTitle(), track.getArtists(), track.getAlbum().getTitle()));
+						
 						Map<String,Object> result =mmw.getMatchingTrack(track.getTitle(), artist);
 						track.setGenre(result.get("music_genre").toString());
-						if(track.getComposer() == null)
-							amw.getComposer(track.getTitle(), artist);
+						
 						break;
 					} catch (IOException e) {
 						System.out.println("Problem: trying again...");

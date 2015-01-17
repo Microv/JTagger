@@ -24,7 +24,7 @@ public class AmazonWrapper {
 	public AmazonWrapper(String song, String artist, String album) {
 		this.song = song;
 		this.artist = artist;
-		
+
 		album = album.toLowerCase();
 		if (album.endsWith("e.p.") && album.length() > 4)
 			this.album = album.replace("e.p.", "ep");
@@ -73,7 +73,7 @@ public class AmazonWrapper {
 			}
 			else	inFirstAttempt = true;
 		} while (--attempts > 0 && !inFirstAttempt);
-		
+
 		if (elementToExtract == null) {
 			reviewInfo = NO_REVIEWS;
 			createAmazonPage(reviewInfo);
@@ -95,9 +95,10 @@ public class AmazonWrapper {
 
 		if (elementToExtract != null) {
 			reviewInfo = NO_REVIEWS;
+			createAmazonPage(reviewInfo);
 			return false;
 		}
-		
+
 		cssQuery = "li > b:contains(average customer review:) ~ span > span > a";
 		elementToExtract = dirtyDocument.select(cssQuery).first();
 		Element avgToExtract = elementToExtract.child(0);

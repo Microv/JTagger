@@ -281,8 +281,8 @@ import org.xml.sax.SAXException;
 		
 			
 		Elements testo = jsoup_doc.select(path);	
-		/*if(testo == null)
-			return "";*/
+		if(testo.size() < 1)
+			return "";
 		
 		/*Element writers = testo.first();
 		writers = writers.child(0).child(1).getElementsByClass("authors").first().child(0);
