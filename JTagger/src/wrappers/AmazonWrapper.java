@@ -37,11 +37,11 @@ public class AmazonWrapper {
 	public boolean findReview() {
 		String reviewInfo = "";
 
-		int attempts = 2;
+		int attempts = 3;
 		boolean inFirstAttempt = false;
 		Document dirtyDocument = null, cleanDocument = null;
-		Elements results;
-		String query;
+		Element elementToExtract;
+		String query, songToSearch = song, albumToSearch = album;
 		do {
 			String track = replaceString(song);
 			String art = replaceString(artist);
@@ -56,92 +56,144 @@ public class AmazonWrapper {
 				System.exit(1);
 			}
 
-			results = dirtyDocument.select("tr[name]");
-			if (results.size() < 1)
+			String cssQuery = "tr:has(td.songTitle:has(a:contains(" + songToSearch + "))"
+					+ "+td.mp3tArtist:has(a:contains(" + artist + "))"
+					+ "+td.mp3tAlbum:has(a:contains(" + albumToSearch + "))) > td.songTitle > a";
+			elementToExtract = dirtyDocument.select(cssQuery).first();
+
+			if (elementToExtract == null && artist.contains(" feat. "))
 				artist = artist.split(" feat. ")[0];
-			else
-				inFirstAttempt = true;
+			else if (elementToExtract == null) {
+				int indexSong = songToSearch.lastIndexOf('(');
+				int indexAlbum = albumToSearch.lastIndexOf('(');
+				if (indexSong > 0)
+					songToSearch = songToSearch.substring(0, indexSong);
+				if (indexAlbum > 0)
+					albumToSearch = albumToSearch.substring(0, indexAlbum);
+			}
+			else	inFirstAttempt = true;
 		} while (--attempts > 0 && !inFirstAttempt);
 		
-		if (results.size() < 1) {
-			reviewInfo = NO_REVIEWS;
-			createAmazonPage(reviewInfo);
-			return false;
-		}
-		
-		String[] trNames = new String[results.size()];
-		for (int i = 0; i < trNames.length; i++)
-			trNames[i] = results.get(i).attr("name");
-
-		Elements albumsLinks = results.select("tr > td.mp3tAlbum > a");
-		int albumPosition = 0;
-		for (Element element : albumsLinks) {
-			String text = element.text().toLowerCase();
-
-			if (text.contains(album) || album.contains(text))
-				break;
-
-			albumPosition++;
-		}
-		
-		if (albumPosition == albumsLinks.size()) {
+		if (elementToExtract == null) {
 			reviewInfo = NO_REVIEWS;
 			createAmazonPage(reviewInfo);
 			return false;
 		}
 
-		Elements songLink = results.select("tr[name*=" + trNames[albumPosition]
-				+ "] > td.songTitle > a");
-		query = songLink.attr("href");
+		query = elementToExtract.attr("href");
 		try {
-			dirtyDocument = Jsoup.connect(query).timeout(0).userAgent("Mozilla").get();
-			cleanDocument = new Cleaner(Whitelist.basic()).clean(dirtyDocument);
-		} catch (IOException e) {
-			logger.severe("Problem to linking to " + query);
-			e.printStackTrace();
-			System.exit(1);
-		}
-
-		Elements bolds = cleanDocument.getElementsByTag("b");
-		Element sibling = null;
-		for (Element element : bolds) {
-			if (element.text().equalsIgnoreCase("average customer review:")) {
-				sibling = element.nextElementSibling();
-				break;
-			}
-		}
-
-		if (sibling.tagName().equalsIgnoreCase("a")) {
-			reviewInfo = NO_REVIEWS;
-			createAmazonPage(reviewInfo);
-			return false;
-		}
-		
-		Element link = sibling.select(sibling.tagName() + " > a[href]").first();
-		query = link.attr("href");
-
-		try {
-			dirtyDocument = Jsoup.connect(query).timeout(0)
-					.userAgent("Mozilla").get();
+			dirtyDocument = Jsoup.connect(query).userAgent("Mozilla").timeout(0).get();
 			dirtyDocument.outputSettings().charset("UTF-8");
-			cleanDocument = dirtyDocument;
 		} catch (IOException e) {
 			logger.severe("Problem to linking at " + query);
 			e.printStackTrace();
 			System.exit(1);
 		}
 
-		Element span = cleanDocument.getElementsByClass("asinReviewsSummary").first();
-		String avgCustomReview = span.text().split(" ")[0];
-		Element div = cleanDocument.getElementsByClass("reviewText").first();
-		String reviewText = div.text();
+		String cssQuery = "li > b:contains(average customer review:) + a";
+		elementToExtract = dirtyDocument.select(cssQuery).first();
+
+		if (elementToExtract != null) {
+			reviewInfo = NO_REVIEWS;
+			return false;
+		}
+		
+		cssQuery = "li > b:contains(average customer review:) ~ span > span > a";
+		elementToExtract = dirtyDocument.select(cssQuery).first();
+		Element avgToExtract = elementToExtract.child(0);
+		String avgCustomerReview = avgToExtract.attr("title").split(" ")[0];
+
+		query = elementToExtract.attr("href");
+		try {
+			dirtyDocument = Jsoup.connect(query).userAgent("Mozilla").timeout(0).get();
+			dirtyDocument.outputSettings().charset("UTF-8");
+		} catch (IOException e) {
+			logger.severe("Problem to linking at " + query);
+			e.printStackTrace();
+			System.exit(1);
+		}
+
+		elementToExtract = dirtyDocument.select("div.reviewText").first();
+		String reviewText = elementToExtract.text();
+
 		cleanDocument = new Cleaner(Whitelist.basic()).clean(dirtyDocument);
 		cleanDocument.outputSettings().charset("UTF-8");
-		bolds = cleanDocument.getElementsByTag("span").select("span > b");
+		Elements bolds = cleanDocument.getElementsByTag("span").select("span > b");
 		Element reviewer = bolds.parents().first().nextElementSibling();
 		String reviewerName = reviewer.text(), titleReview = bolds.first().text();
+//		String[] trNames = new String[results.size()];
+//		for (int i = 0; i < trNames.length; i++)
+//			trNames[i] = results.get(i).attr("name");
+//
+//		Elements albumsLinks = results.select("tr > td.mp3tAlbum > a");
+//		int albumPosition = 0;
+//		for (Element element : albumsLinks) {
+//			String text = element.text().toLowerCase();
+//
+//			if (text.contains(album) || album.contains(text))
+//				break;
+//
+//			albumPosition++;
+//		}
+//		
+//		if (albumPosition == albumsLinks.size()) {
+//			reviewInfo = NO_REVIEWS;
+//			createAmazonPage(reviewInfo);
+//			return false;
+//		}
+//
+//		Elements songLink = results.select("tr[name*=" + trNames[albumPosition]
+//				+ "] > td.songTitle > a");
+//		query = songLink.attr("href");
+//		try {
+//			dirtyDocument = Jsoup.connect(query).timeout(0).userAgent("Mozilla").get();
+//			cleanDocument = new Cleaner(Whitelist.basic()).clean(dirtyDocument);
+//		} catch (IOException e) {
+//			logger.severe("Problem to linking to " + query);
+//			e.printStackTrace();
+//			System.exit(1);
+//		}
+//
+//		Elements bolds = cleanDocument.getElementsByTag("b");
+//		Element sibling = null;
+//		for (Element element : bolds) {
+//			if (element.text().equalsIgnoreCase("average customer review:")) {
+//				sibling = element.nextElementSibling();
+//				break;
+//			}
+//		}
+//
+//		if (sibling.tagName().equalsIgnoreCase("a")) {
+//			reviewInfo = NO_REVIEWS;
+//			createAmazonPage(reviewInfo);
+//			return false;
+//		}
+//		
+//		Element link = sibling.select(sibling.tagName() + " > a[href]").first();
+//		query = link.attr("href");
+//
+//		try {
+//			dirtyDocument = Jsoup.connect(query).timeout(0)
+//					.userAgent("Mozilla").get();
+//			dirtyDocument.outputSettings().charset("UTF-8");
+//			cleanDocument = dirtyDocument;
+//		} catch (IOException e) {
+//			logger.severe("Problem to linking at " + query);
+//			e.printStackTrace();
+//			System.exit(1);
+//		}
+//
+//		Element span = cleanDocument.getElementsByClass("asinReviewsSummary").first();
+//		String avgCustomReview = span.text().split(" ")[0];
+//		Element div = cleanDocument.getElementsByClass("reviewText").first();
+//		String reviewText = div.text();
+//		cleanDocument = new Cleaner(Whitelist.basic()).clean(dirtyDocument);
+//		cleanDocument.outputSettings().charset("UTF-8");
+//		bolds = cleanDocument.getElementsByTag("span").select("span > b");
+//		Element reviewer = bolds.parents().first().nextElementSibling();
+//		String reviewerName = reviewer.text(), titleReview = bolds.first().text();
 
-		reviewInfo = avgCustomReview + "\n" + reviewerName + "\n"
+		reviewInfo = avgCustomerReview + "\n" + reviewerName + "\n"
 				+ titleReview + "\n" + reviewText;
 
 		createAmazonPage(reviewInfo);

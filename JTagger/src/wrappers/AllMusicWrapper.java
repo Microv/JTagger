@@ -45,7 +45,7 @@ public class AllMusicWrapper {
 	public String getLabel(String artist, String album, int year) throws IOException {
 		String label = "";
 		String query, albumToSearch = album;
-		int attempts = 2, index = -1;
+		int attempts = 3, index = -1;
 		boolean inFirstAttempt = false;
 		Document dirtyDocument = null;
 		Element elementToExtract;
@@ -59,12 +59,17 @@ public class AllMusicWrapper {
 			+ artist + "))) > div.title > a";
 			Elements elements = dirtyDocument.select(cssQuery);
 			elementToExtract = elements.first();
+			System.out.println(elementToExtract);
+			System.out.println(artist);
 
-			if (elementToExtract == null) {
+			if (elementToExtract == null && artist.contains(" feat. "))
+				artist = artist.split(" feat. ")[0];
+			else if (elementToExtract == null) {
 				index = albumToSearch.lastIndexOf('(');
 				if (index > 0)
 					albumToSearch = albumToSearch.substring(0, index).trim();
-			} else {
+			} 
+			else {
 				String text = elementToExtract.text().toLowerCase();
 				if (!text.equals(album)) {
 					int length = text.length();
@@ -85,6 +90,7 @@ public class AllMusicWrapper {
 
 				inFirstAttempt = true;
 			}
+			System.out.println(attempts);
 		} while (--attempts > 0 && !inFirstAttempt);
 		
 		if (elementToExtract == null)	return LABEL_NOT_FOUND;
