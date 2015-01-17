@@ -48,29 +48,48 @@ public class AllMusicWrapper {
 		int attempts = 2, index = -1;
 		boolean inFirstAttempt = false;
 		Document dirtyDocument = null;
-		Element el;
+		Element elementToExtract;
 		do {
-			query = SEARCH_ALBUM_LINK + albumToSearch;
+			query = SEARCH_ALBUM_LINK + albumToSearch + " " + artist;
 
-			dirtyDocument = Jsoup.connect(query).timeout(0)
-						.userAgent("Mozilla").get();
-			
+			dirtyDocument = Jsoup.connect(query).timeout(0).userAgent("Mozilla").get();
 
-			String cssQuery = "li.album > div.info:has(div.artist:has(a:contains("
-					+ artist + "))) > div.title > a";
-			el = dirtyDocument.select(cssQuery).first();
+			String cssQuery = "li.album > div.info:has(div.title:has(a:contains("
+			+ albumToSearch + ")) + div.artist:has(a:contains("
+			+ artist + "))) > div.title > a";
+			Elements elements = dirtyDocument.select(cssQuery);
+			elementToExtract = elements.first();
 
-			if (el == null) {
+			if (elementToExtract == null) {
 				index = albumToSearch.lastIndexOf('(');
 				if (index > 0)
 					albumToSearch = albumToSearch.substring(0, index).trim();
-			} else
+			} else {
+				String text = elementToExtract.text().toLowerCase();
+				if (!text.equals(album)) {
+					int length = text.length();
+					for (int i = 1; i < elements.size(); i++) {
+						Element element = elements.get(i);
+						text = element.text().toLowerCase();
+						if (text.equals(album)) {
+							elementToExtract = element;
+							break;
+						}
+
+						if (length > text.length()) {
+							elementToExtract = element;
+							length = elementToExtract.text().length();
+						}
+					}
+				}
+
 				inFirstAttempt = true;
+			}
 		} while (--attempts > 0 && !inFirstAttempt);
 		
-		if (el == null)	return LABEL_NOT_FOUND;
+		if (elementToExtract == null)	return LABEL_NOT_FOUND;
 
-		query = el.attr("href").concat("/releases");
+		query = elementToExtract.attr("href").concat("/releases");
 		try {
 			dirtyDocument = Jsoup.connect(query).timeout(0)
 					.userAgent("Mozilla").get();
