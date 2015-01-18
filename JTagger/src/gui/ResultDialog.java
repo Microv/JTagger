@@ -201,7 +201,7 @@ public class ResultDialog extends Dialog {
 		
 		Label lblComposer = new Label(grpOtherInfo, SWT.NONE);
 		lblComposer.setBounds(10, 22, 60, 14);
-		lblComposer.setText("Composer");
+		lblComposer.setText("Composers");
 		
 		Label lblAlbumArtist = new Label(grpOtherInfo, SWT.NONE);
 		lblAlbumArtist.setBounds(10, 69, 78, 14);
@@ -245,7 +245,7 @@ public class ResultDialog extends Dialog {
 		
 		Label lblDiscN = new Label(grpOtherInfo, SWT.NONE);
 		lblDiscN.setBounds(10, 219, 78, 14);
-		lblDiscN.setText("Disc number");
+		lblDiscN.setText("Discs number");
 		
 		discn2_text = new Text(grpOtherInfo, SWT.BORDER);
 		discn2_text.setBounds(192, 214, 51, 19);
@@ -494,8 +494,7 @@ public class ResultDialog extends Dialog {
 			public void run() {
 				// amazon wrapper
 				AmazonWrapper aw = new AmazonWrapper(track.getTitle(), artist, track.getAlbum().getTitle());
-				System.out.print("Amazon wrapper has done: ");
-				System.out.println("review" + (aw.findReview() ? " " : " not ") + "found.");
+				System.out.println("Amazon wrapper has done: review" + (aw.findReview() ? " " : " not ") + "found.");
 			}
 		}));
 		threads.get(1).start();

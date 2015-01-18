@@ -46,7 +46,7 @@ public class AmazonWrapper {
 			String track = replaceString(song);
 			String art = replaceString(artist);
 			String alb = replaceString(album);
-			query = LINK + track + "+" + art + "+" + alb;
+			query = LINK + track + "+" + art + "+" + alb + "&sort=review-rank";
 
 			try {
 				dirtyDocument = Jsoup.connect(query).timeout(0).userAgent("Mozilla").get();

@@ -167,7 +167,7 @@ public class TagWindow {
 		label_1.setBounds(10, 63, 62, 14);
 		
 		Label label_2 = new Label(group, SWT.NONE);
-		label_2.setText("Composer");
+		label_2.setText("Composers");
 		label_2.setBounds(10, 100, 62, 14);
 		
 		Label label_3 = new Label(group, SWT.NONE);
@@ -254,7 +254,7 @@ public class TagWindow {
 		
 		Label lblDiscN = new Label(group_1, SWT.NONE);
 		lblDiscN.setBounds(10, 232, 83, 14);
-		lblDiscN.setText("Disc number");
+		lblDiscN.setText("Discs number");
 		
 		textDiscNo1 = new Text(group_1, SWT.BORDER);
 		textDiscNo1.setBounds(196, 224, 36, 22);
