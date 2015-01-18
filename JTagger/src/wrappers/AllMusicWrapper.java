@@ -9,7 +9,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 public class AllMusicWrapper {
-	private static final String SEARCH_ALBUM_LINK = "http://www.allmusic.com/search/album/";
+	private static final String SEARCH_ALBUM_LINK = "http://www.allmusic.com/search/albums/";
+	private static final String SEARCH_SONG_LINK = "http://www.allmusic.com/search/songs/";
 	private static final String LABEL_NOT_FOUND = "Label not found";
 	
 	private static Logger logger = Logger.getLogger("global");
@@ -42,43 +43,91 @@ public class AllMusicWrapper {
        
 	}
 
-	public String getComposers(String song, String artist, String album) {
-		String result = getAlbumURL(artist, album);
-		int pos = result.indexOf('|');
-		String albumURL = result.substring(pos + 1);
-		Document dirtyDocument = null;
-		try {
-			dirtyDocument = Jsoup.connect(albumURL).userAgent("Mozilla").timeout(0).get();
-		} catch (IOException e) {
-			logger.severe("Problem to linking at " + albumURL);
-			e.printStackTrace();
-			System.exit(1);
-		}
+//	public String getComposers(String song, String artist, String album) {
+//		String result = getAlbumURL(artist, album);
+//		int pos = result.indexOf('|');
+//		String albumURL = result.substring(pos + 1);
+//		Document dirtyDocument = null;
+//		try {
+//			dirtyDocument = Jsoup.connect(albumURL).userAgent("Mozilla").timeout(0).get();
+//		} catch (IOException e) {
+//			logger.severe("Problem to linking at " + albumURL);
+//			e.printStackTrace();
+//			System.exit(1);
+//		}
+//
+//		int attempts = 2;
+//		boolean inFirstAttempt = false;
+//		String songToSearch = song;
+//		Elements composerElements;
+//		do {
+//			String cssQuery = "div.title:has(a:contains(" + songToSearch + ")) + div.composer > a";
+//			composerElements = dirtyDocument.select(cssQuery);
+//
+//			if (composerElements.size() < 1) {
+//				int index = songToSearch.lastIndexOf('(');
+//				if (index > 0)
+//					songToSearch = songToSearch.substring(0, index).trim();
+//			}
+//			else	inFirstAttempt = true;
+//		} while (--attempts > 0 && !inFirstAttempt);
+//
+//		String composers = "";
+//		for (Element element : composerElements)
+//			composers += element.text() + ", ";
+//
+//		if (!composers.isEmpty())
+//			composers = composers.substring(0, composers.length() - 2);
+//
+//		return composers;
+//	}
 
-		int attempts = 2;
-		boolean inFirstAttempt = false;
-		String songToSearch = song;
-		Elements composerElements;
-		do {
-			String cssQuery = "div.title:has(a:contains(" + songToSearch + ")) + div.composer > a";
-			composerElements = dirtyDocument.select(cssQuery);
+	public String getComposers(String song, String artist) {
+		Element songEl = getSongInfo(song, artist);
+		if (songEl == null)	return "";
 
-			if (composerElements.size() < 1) {
-				int index = songToSearch.lastIndexOf('(');
-				if (index > 0)
-					songToSearch = songToSearch.substring(0, index).trim();
-			}
-			else	inFirstAttempt = true;
-		} while (--attempts > 0 && !inFirstAttempt);
-
+		Elements composerElements = songEl.select("div.composers > a");
 		String composers = "";
 		for (Element element : composerElements)
 			composers += element.text() + ", ";
 
 		if (!composers.isEmpty())
 			composers = composers.substring(0, composers.length() - 2);
-
+		
 		return composers;
+	}
+
+	private Element getSongInfo(String song, String artist) {
+		String query;
+		int attempts = 3, index = -1;
+		boolean inFirstAttempt= false;
+		Document dirtyDocument = null;
+		Element songEl;
+		do {
+			query = SEARCH_SONG_LINK + song + " " + artist;
+			try {
+				dirtyDocument = Jsoup.connect(query).timeout(0).userAgent("Mozilla").get();
+			} catch (IOException e) {
+				logger.severe("Problem to linking at " + query);
+				e.printStackTrace();
+				System.exit(1);
+			}
+
+			String cssQuery = "li.song:has(div.title:has(a:contains(" + song + "))"
+					+ " + div.performers:has(a:contains(" + artist + "))"
+							+ " + div.composers)";
+			songEl = dirtyDocument.select(cssQuery).first();
+			if (songEl == null && artist.contains(" feat. "))
+				artist = artist.split(" feat. ")[0];
+			else if (songEl == null) {
+				index = song.lastIndexOf('(');
+				if (index > 0)
+					song = song.substring(0, index);
+			}
+			else	inFirstAttempt = true;
+		} while (--attempts > 0 && !inFirstAttempt);
+		
+		return songEl;
 	}
 
 	public String getLabel(String artist, String album, int year) throws IOException {

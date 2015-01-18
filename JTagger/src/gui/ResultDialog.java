@@ -575,7 +575,7 @@ public class ResultDialog extends Dialog {
 						
 						track.setComposer(mmw.getComposer(artist, track.getTitle()));
 						if (track.getComposer().isEmpty())
-							track.setComposer(amw.getComposers(track.getTitle(), track.getArtists(), track.getAlbum().getTitle()));
+							track.setComposer(amw.getComposers(track.getTitle(), track.getArtists()));
 						
 						Map<String,Object> result =mmw.getMatchingTrack(track.getTitle(), artist);
 						track.setGenre(result.get("music_genre").toString());
