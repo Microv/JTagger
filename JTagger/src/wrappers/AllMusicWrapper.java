@@ -11,7 +11,6 @@ import org.jsoup.select.Elements;
 public class AllMusicWrapper {
 	private static final String SEARCH_ALBUM_LINK = "http://www.allmusic.com/search/albums/";
 	private static final String SEARCH_SONG_LINK = "http://www.allmusic.com/search/songs/";
-	private static final String LABEL_NOT_FOUND = "Label not found";
 	
 	private static Logger logger = Logger.getLogger("global");
 	private static String link = "http://www.allmusic.com/search/all/";
@@ -99,6 +98,8 @@ public class AllMusicWrapper {
 
 	private Element getSongInfo(String song, String artist) {
 		String query;
+		song = song.replaceAll("[’]", "'");
+		artist = artist.replaceAll("[’]", "'");
 		int attempts = 3, index = -1;
 		boolean inFirstAttempt= false;
 		Document dirtyDocument = null;
@@ -133,7 +134,7 @@ public class AllMusicWrapper {
 	public String getLabel(String artist, String album, int year) throws IOException {
 		String result = getAlbumURL(artist, album);
 
-		if (result.equals(LABEL_NOT_FOUND))	return LABEL_NOT_FOUND;
+		if (result.isEmpty())	return "";
 
 		int pos = result.indexOf('|'), index;
 		index = Integer.parseInt(result.substring(0, pos));
@@ -155,8 +156,9 @@ public class AllMusicWrapper {
 
 		String cssQuery = "tr:has(td.format:contains(CD) + td[data-sort-value*="
 				+ album + "] ~ td.year:contains(" + year + "))";
-		Element labelEl = dirtyDocument.select(cssQuery).first();
-		if (labelEl == null) {
+		Elements labelElements = dirtyDocument.select(cssQuery);
+		Element labelEl = null;
+		if (labelElements.size() < 1) {
 			cssQuery = "tr:has(td.format:contains(CD))";
 			Elements yearEls = dirtyDocument.select(cssQuery + " > td.year");
 			Element yearEl = yearEls.get(0);
@@ -179,14 +181,33 @@ public class AllMusicWrapper {
 
 			cssQuery = "tr:has(td.format:contains(CD) ~ td.year:contains("
 					+ yearToExtract + "))";
-			labelEl = dirtyDocument.select(cssQuery).first();
+			labelElements = dirtyDocument.select(cssQuery);
+			for (Element element : labelElements.select("div.label")) {
+				String text = element.text();
+				if (text.isEmpty())	continue;
+
+				labelEl = element;
+				break;
+			}
+		}
+		else {
+			labelElements = dirtyDocument.select(cssQuery);
+			for (Element element : labelElements.select("div.label")) {
+				String text = element.text();
+				if (text.isEmpty())	continue;
+
+				labelEl = element;
+				break;
+			}
 		}
 
-		String label = labelEl.select("div.label").text();
+		String label = labelEl.text();
 		return label;
 	}
 
 	private String getAlbumURL(String artist, String album) {
+		artist = artist.replaceAll("[’]", "'");
+		album = album.replaceAll("[’]", "'");
 		String query, albumToSearch = album;
 		int attempts = 3, index = -1;
 		boolean inFirstAttempt = false;
@@ -239,7 +260,7 @@ public class AllMusicWrapper {
 			}
 		} while (--attempts > 0 && !inFirstAttempt);
 
-		if (albumEl == null)	return LABEL_NOT_FOUND;
+		if (albumEl == null)	return "";
 
 		String albumURL = albumEl.attr("href");
 		String toReturn = (index + "|").concat(albumURL);

@@ -570,7 +570,7 @@ public class ResultDialog extends Dialog {
 					try {
 						int year = Integer.parseInt(track.getAlbum().getYear().split("-")[0]);
 						track.getAlbum().setPublisher(amw.getLabel(track.getArtists(), track.getAlbum().getTitle(), year));
-						if (track.getAlbum().getPublisher().equals("Label not found"))
+						if (track.getAlbum().getPublisher().isEmpty())
 							track.getAlbum().setPublisher(mmw.getMatchingTrack(track.getTitle(), artist).get("album_copyright"));
 						
 						track.setComposer(mmw.getComposer(artist, track.getTitle()));

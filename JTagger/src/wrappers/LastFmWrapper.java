@@ -13,8 +13,8 @@ public class LastFmWrapper {
 	
 	public LastFmWrapper(String song, String artist, String album) {
 		this.song = replaceString(song).toLowerCase();
-		this.artist = artist;
-		this.album = album;
+		this.artist = replaceString(artist);
+		this.album = replaceString(album);
 	}
 	
 	private String replaceString(String string) {
